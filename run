@@ -1,0 +1,4 @@
+export GOOGLE_APPLICATION_CREDENTIALS="src/config/google_credentials.json"
+export VOICE_ASSISTANT_CONFIGURATION="src/config/configuration.yaml"
+python -m src
+
