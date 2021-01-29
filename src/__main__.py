@@ -5,6 +5,7 @@ import os
 from src.core import run_voice_assistant
 from src.exceptions import AssistantBaseError
 
+
 def _check_envvar():
     required_envvar = (
         "GOOGLE_APPLICATION_CREDENTIALS",
@@ -21,4 +22,4 @@ def _check_envvar():
 
 if __name__ == "__main__":
     _check_envvar()
-    # run_voice_assistant()
+    run_voice_assistant()
