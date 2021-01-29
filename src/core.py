@@ -17,82 +17,29 @@ from src.interfaces.voice.microphone_stream import MicrophoneStream
 from src.exceptions import AssistantBaseError
 from src.utils.config import Config
 from src.utils.debug import print_and_flush
+from src.interfaces.voice import SpeechToText, TextToSpeech, KeywordDetector
 
 
 def run_voice_assistant():
 
-    porcupine = pvporcupine.create(keywords=["jarvis"])
-
-    RATE = porcupine.sample_rate
-    CHUNK = porcupine.frame_length
-
-    client = speech.SpeechClient()
-    config = types.RecognitionConfig(
-        encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
-        sample_rate_hertz=porcupine.sample_rate,
-        language_code=Config.google_cloud.language_code,
-    )
-    streaming_config = types.StreamingRecognitionConfig(
-        config=config, interim_results=True
-    )
+    keyword_detector = KeywordDetector(keywords=["jarvis"])
+    stt = SpeechToText(keyword_detector.rate)
+    tts = TextToSpeech()
 
     while True:
-        with MicrophoneStream(RATE, CHUNK) as stream:
+        with MicrophoneStream(
+            keyword_detector.rate, keyword_detector.chunk_size
+        ) as stream:
             while True:
-                pcm = struct.unpack_from("h" * porcupine.frame_length, stream.read())
-                keyword_index = porcupine.process(pcm)
+                keyword_index = keyword_detector.process(stream.read())
 
                 if keyword_index >= 0:
                     print("Hotword Detected")
 
-                    requests = (
-                        types.StreamingRecognizeRequest(audio_content=content)
-                        for content in stream.generator()
-                    )
-                    responses = client.streaming_recognize(
-                        streaming_config, requests, timeout=25
-                    )
-                    try:
-                        _process_responses(responses)
-                    except ServiceUnavailable as e:
-                        raise AssistantBaseError(
-                            f"{e}\nFailed to connect to google services. "
-                            "Plaese check credentials or internet connection"
-                        )
-                    except DeadlineExceeded:
-                        pass
+                    for transcript in stt.recognize_from_stream(stream):
+                        if not transcript.is_final:
+                            print_and_flush(transcript)
+                        else:
+                            print(f"final: {transcript}")
+                            tts.say(f"fuck off with your: {transcript}")
                     break
-
-
-def _process_responses(responses):
-    is_final_once = False
-    initial_transcript = ""
-
-    responses = TimeoutIterator(responses, timeout=2)
-
-    for idx, response in enumerate(responses):
-        # timeout in case user is not talking
-        if response == responses.get_sentinel():
-            print(f"final: {transcript}")
-            break
-
-        if not response.results:
-            continue
-
-        result = response.results[0]
-        if not result.alternatives:
-            continue
-
-        # best alternative
-        transcript = f"{initial_transcript} {result.alternatives[0].transcript}"
-
-        if not result.is_final:
-            print_and_flush(transcript)
-        else:
-            if not is_final_once:
-                is_final_once = True
-                initial_transcript = transcript
-                print_and_flush(transcript)
-            else:
-                print(f"final: {transcript}")
-                break
