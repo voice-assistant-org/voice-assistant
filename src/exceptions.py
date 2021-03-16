@@ -1,5 +1,9 @@
 """Host custom exceptions."""
 
 
-class AssistantBaseError(Exception):
+class AssistantBaseException(Exception):
     """Base assistant exception."""
+
+
+class NlpException(AssistantBaseException):
+    """Natural Language Processor Error."""

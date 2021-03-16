@@ -1,1 +1,1 @@
-"""Voice assistant integration with Home Assistant"""
+"""Voice assistant integration with Home Assistant."""
