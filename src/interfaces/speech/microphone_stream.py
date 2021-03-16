@@ -1,28 +1,27 @@
-import os
-import sys
-import struct
-import pyaudio
-import pvporcupine
-from six.moves import queue
-import time
-from google.cloud import speech
-from google.cloud.speech import enums
-from google.cloud.speech import types
+"""Microphone audio stream implementation."""
 
+from types import TracebackType
+from typing import Dict, Generator, List, Tuple, Type
+
+from six.moves import queue
+
+import pyaudio
 from src.utils.datastruct import RollingWindowQueue
 
 
 class MicrophoneStream(object):
     """Opens a recording stream as a generator yielding the audio chunks."""
 
-    def __init__(self, rate, chunk, rolling_window_sec=3):
-        # Create a thread-safe buffer of audio data
+    def __init__(self, rate: int, chunk: int, rolling_window_sec: float = 3):
+        """Create a microphone stream object."""
         self._rate = rate
         self._chunk = chunk
 
         # rolling window audio data buffer to store
         # the speech pronounced before the trigger word
-        self._buff = RollingWindowQueue(size=int(rolling_window_sec * rate / chunk))
+        self._buff = RollingWindowQueue(
+            size=int(rolling_window_sec * rate / chunk)
+        )
 
         audio_interface = pyaudio.PyAudio()
         self._audio_stream = audio_interface.open(
@@ -33,35 +32,49 @@ class MicrophoneStream(object):
             frames_per_buffer=self._chunk,
             stream_callback=self._fill_buffer,
         )
-        self._last_chunks = []
+        self._last_chunks: List[bytes] = []
         self.closed = False
 
-    def __enter__(self):
+    def __enter__(self):  # type: ignore
+        """Start audio stream."""
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(
+        self,
+        type: Type[BaseException],
+        value: BaseException,
+        traceback: TracebackType,
+    ) -> None:
+        """Stop audio stream."""
         self._audio_stream.stop_stream()
         self._audio_stream.close()
         self.closed = True
         # Signal the generator to terminate so that the client's
         # streaming_recognize method will not block the process termination.
         self._buff.put(None)
-        print("closing speech buffer")
 
-    def _fill_buffer(self, in_data, frame_count, time_info, status_flags):
-        """Continuously collect data from the audio stream, into the buffer."""
+    def _fill_buffer(
+        self,
+        in_data: bytes,
+        frame_count: int,
+        time_info: Dict,
+        status_flags: int,
+    ) -> Tuple:
+        """Continuously collect data from the audio stream into the buffer."""
         self._buff.put(in_data)
         self._last_chunks.append(in_data)
         return None, pyaudio.paContinue
 
-    def read(self):
+    def read(self) -> bytes:
+        """Get chunk of audio bytes."""
         while not self._last_chunks:
             pass
         chunk = b"".join(self._last_chunks)
         self._last_chunks = []
         return chunk
 
-    def generator(self):
+    def generator(self) -> Generator[bytes, None, None]:
+        """Continuously generate chunks of audio data."""
         self._buff.disable_size_limit()
 
         while not self.closed:

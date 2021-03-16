@@ -1,15 +1,11 @@
 """Speech-to-text component."""
 
-import struct
-from six.moves import queue
-from iterators import TimeoutIterator
 from typing import Generator
 
 from google.cloud import speech
-from google.cloud.speech import enums
-from google.cloud.speech import types
-
-from src.interfaces.voice.microphone_stream import MicrophoneStream
+from google.cloud.speech import enums, types
+from iterators import TimeoutIterator
+from src.interfaces.speech.microphone_stream import MicrophoneStream
 from src.utils.config import Config
 
 
@@ -21,7 +17,9 @@ class RecognitionString(str):
     or whether recognition result is final.
     """
 
-    def __new__(cls, value: str, is_final: bool):
+    is_final = False
+
+    def __new__(cls, value: str, is_final: bool):  # type: ignore
         """Create recognition string object."""
         self_obj = str.__new__(cls, value)
         self_obj.is_final = is_final
@@ -29,6 +27,8 @@ class RecognitionString(str):
 
 
 class SpeechToText:
+    """Speech to Text class."""
+
     def __init__(self, rate: int):
         """Create speech-to-text object."""
         self._client = speech.SpeechClient()
@@ -44,9 +44,10 @@ class SpeechToText:
     def recognize_from_stream(
         self, stream: MicrophoneStream
     ) -> Generator[RecognitionString, None, None]:
-        """Generator of transcripts from audio stream."""
+        """Generate speech transcripts from audio stream."""
         is_final_once = False
         initial_transcript = ""
+        transcript = "_empty_"
 
         requests = (
             types.StreamingRecognizeRequest(audio_content=content)
@@ -61,6 +62,7 @@ class SpeechToText:
         for response in responses:
             # timeout in case user is not talking
             if response == timedout_response:
+                print("*** STOPPING STT timeout***")
                 yield RecognitionString(transcript, is_final=True)
                 return
 
@@ -72,7 +74,9 @@ class SpeechToText:
                 continue
 
             # best alternative
-            transcript = f"{initial_transcript} {result.alternatives[0].transcript}"
+            transcript = (
+                f"{initial_transcript} {result.alternatives[0].transcript}"
+            )
 
             if not result.is_final:
                 yield RecognitionString(transcript, is_final=False)
@@ -82,5 +86,6 @@ class SpeechToText:
                     initial_transcript = transcript
                     yield RecognitionString(transcript, is_final=False)
                 else:
+                    print("*** STOPPING STT ***")
                     yield RecognitionString(transcript, is_final=True)
                     return

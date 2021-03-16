@@ -1,15 +1,15 @@
 """Text-to-speech component."""
 
 import os
-import boto3
 
+import boto3
 from src.utils.config import Config
 
 
 class TextToSpeech:
-    """Text to Speech class."""
+    """Text to Speech class using Amazon Polly."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Create text-to-speech object."""
         self._audio_folder = self._get_audio_dir()
         self._client = boto3.Session(
@@ -18,8 +18,8 @@ class TextToSpeech:
             region_name=Config.aws.region_name,
         ).client("polly")
 
-    def say(self, text: str):
-        """Say `text`.
+    def say(self, text: str) -> None:
+        """Pronounce `text` with configured Polly voice.
 
         ToDo:
             Current implementation is bad and should later
@@ -29,19 +29,18 @@ class TextToSpeech:
         os.system(f"mpg123 {self._audio_folder}/speech.mp3 >/dev/null 2>&1")
         os.system(f"rm {self._audio_folder}/speech.mp3")
 
-    def synthesize_to_mp3_file(self, text: str, filename: str):
-        """Synthesize `text` to mp3 file."""
+    def synthesize_to_mp3_file(self, text: str, filename: str) -> None:
+        """Save synthesized `text` to mp3 file."""
         audio_bytes = self.synthesize(text, format="mp3")
         with open(f"{self._audio_folder}/{filename}.mp3", "wb") as file:
             file.write(audio_bytes)
 
     def synthesize(self, text: str, format: str = "mp3") -> bytes:
-        """Convert `text` to audio bytes."""
-        return self._client.synthesize_speech(
+        """Synthesize `text` to audio bytes."""
+        return self._client.synthesize_speech(  # type: ignore
             VoiceId=Config.aws.voice_id, OutputFormat=format, Text=text
-        )[
-            "AudioStream"
-        ].read()  # ogg_vorbis
+        )["AudioStream"].read()
+        # ogg_vorbis
 
     def _get_audio_dir(self) -> str:
         """Get audio directory for temporarily writing audio file."""
