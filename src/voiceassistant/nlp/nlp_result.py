@@ -4,8 +4,8 @@ Should be a return type of all NL processors.
 """
 from typing import Any, Callable, Tuple
 
-from src.interfaces import InterfaceType
-from src.utils.datastruct import DottedDict
+from voiceassistant.interfaces import InterfaceType
+from voiceassistant.utils.datastruct import DottedDict
 
 
 class NlpResult:

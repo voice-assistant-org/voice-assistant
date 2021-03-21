@@ -1,13 +1,13 @@
 """Voice Assistant core components."""
 
-import src.skills  # NOQA
-from src.interfaces.speech import (
+import voiceassistant.skills  # NOQA
+from voiceassistant.interfaces.speech import (
     KeywordDetector,
     MicrophoneStream,
     SpeechInterface,
 )
-from src.nlp import NaturalLanguageProcessor
-from src.utils.debug import print_and_flush
+from voiceassistant.nlp import NaturalLanguageProcessor
+from voiceassistant.utils.debug import print_and_flush
 
 
 def run_voice_assistant() -> None:

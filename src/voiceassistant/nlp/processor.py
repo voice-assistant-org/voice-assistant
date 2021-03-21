@@ -3,8 +3,8 @@
 from types import TracebackType
 from typing import Optional, Set, Type
 
-from src.interfaces import InterfaceType
-from src.interfaces.speech import RecognitionString
+from voiceassistant.interfaces import InterfaceType
+from voiceassistant.interfaces.speech import RecognitionString
 
 from .nlp_result import NlpResult
 from .regex import NLPregexProcessor

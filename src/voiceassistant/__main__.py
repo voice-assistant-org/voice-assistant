@@ -2,8 +2,8 @@
 
 import os
 
-from src.core import run_voice_assistant
-from src.exceptions import AssistantBaseException
+from voiceassistant.core import run_voice_assistant
+from voiceassistant.exceptions import AssistantBaseException
 
 
 def _check_envvar() -> None:

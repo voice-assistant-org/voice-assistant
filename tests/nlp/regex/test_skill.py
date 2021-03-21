@@ -1,5 +1,5 @@
 import pytest
-from src.nlp.regex.skill import RegexSkillStruct
+from voiceassistant.nlp.regex.skill import RegexSkillStruct
 
 
 def dummy_skill_func():

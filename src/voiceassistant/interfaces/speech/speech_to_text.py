@@ -5,8 +5,8 @@ from typing import Generator
 from google.cloud import speech
 from google.cloud.speech import enums, types
 from iterators import TimeoutIterator
-from src.interfaces.speech.microphone_stream import MicrophoneStream
-from src.utils.config import Config
+from voiceassistant.interfaces.speech.microphone_stream import MicrophoneStream
+from voiceassistant.utils.config import Config
 
 
 class RecognitionString(str):

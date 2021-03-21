@@ -6,7 +6,7 @@ from typing import Dict, Generator, List, Tuple, Type
 from six.moves import queue
 
 import pyaudio
-from src.utils.datastruct import RollingWindowQueue
+from voiceassistant.utils.datastruct import RollingWindowQueue
 
 
 class MicrophoneStream(object):

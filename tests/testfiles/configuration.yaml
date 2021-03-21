@@ -1,0 +1,22 @@
+google_cloud:
+  language_code: en-US
+
+aws:
+  access_key_id: sample_key_id
+  secret_access_key: sample_acces_key
+  region_name: sample_region 
+  voice_id: Brian
+
+spotify:
+  client_id: sample_id
+  client_secret: sample_secret
+  redirect_uri: http://127.0.0.1:9090
+  default_device_name: Sample Default Device
+
+hass:
+  api_url: http://sample_has_uri 
+  token: sample_token 
+
+location:
+  room: Bedroom
+

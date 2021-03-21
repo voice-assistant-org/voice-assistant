@@ -1,5 +1,5 @@
 import pytest
-from src.nlp.regex.expression import NLPregexExpression
+from voiceassistant.nlp.regex.expression import NLPregexExpression
 
 
 @pytest.mark.parametrize(

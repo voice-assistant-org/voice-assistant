@@ -13,8 +13,8 @@ Double brackets <<>> specify entities of few words.
 import re
 from typing import Dict, Optional, Tuple, Union
 
-from src.exceptions import NlpException
-from src.utils.datastruct import DottedDict
+from voiceassistant.exceptions import NlpException
+from voiceassistant.utils.datastruct import DottedDict
 
 _ENTITY_REGEX = re.compile(r"(<{1,2}.*?>{1,2})")
 _LONG_ENTITY_REGEX = re.compile(r"(<<\w+>>)")

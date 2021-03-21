@@ -3,7 +3,7 @@
 import os
 
 import boto3
-from src.utils.config import Config
+from voiceassistant.utils.config import Config
 
 
 class TextToSpeech:

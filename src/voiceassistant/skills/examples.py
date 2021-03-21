@@ -2,9 +2,9 @@
 
 from datetime import datetime
 
-from src.interfaces import InterfaceType
-from src.nlp.regex import regex_skill
-from src.utils.datastruct import DottedDict
+from voiceassistant.interfaces import InterfaceType
+from voiceassistant.nlp.regex import regex_skill
+from voiceassistant.utils.datastruct import DottedDict
 
 
 @regex_skill(
