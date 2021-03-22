@@ -1,0 +1,15 @@
+# Git
+.git
+.gitignore
+
+# Testing
+.tox
+mypy.ini
+tests
+
+# Virtualization
+venv
+
+# Cache
+**/__pycache__
+.mypy_cache
