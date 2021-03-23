@@ -3,7 +3,6 @@
 from typing import Generator
 
 from google.cloud import speech
-from google.cloud.speech import enums, types
 from iterators import TimeoutIterator
 from voiceassistant.interfaces.speech.microphone_stream import MicrophoneStream
 from voiceassistant.utils.config import Config
@@ -32,12 +31,12 @@ class SpeechToText:
     def __init__(self, rate: int):
         """Create speech-to-text object."""
         self._client = speech.SpeechClient()
-        config = types.RecognitionConfig(
-            encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
+        config = speech.RecognitionConfig(
+            encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
             sample_rate_hertz=rate,
             language_code=Config.google_cloud.language_code,
         )
-        self._streaming_config = types.StreamingRecognitionConfig(
+        self._streaming_config = speech.StreamingRecognitionConfig(
             config=config, interim_results=True
         )
 
@@ -50,7 +49,7 @@ class SpeechToText:
         transcript = "_empty_"
 
         requests = (
-            types.StreamingRecognizeRequest(audio_content=content)
+            speech.StreamingRecognizeRequest(audio_content=content)
             for content in stream.generator()
         )
         responses = self._client.streaming_recognize(
