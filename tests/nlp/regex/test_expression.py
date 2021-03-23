@@ -1,4 +1,5 @@
 import pytest
+
 from voiceassistant.nlp.regex.expression import NLPregexExpression
 
 
@@ -37,3 +38,20 @@ def test_expression_match_finds_last_endity_end(
     expr_match = NLPregexExpression(expression, entities=None).match(text)
     assert expr_match
     assert expr_match.last_entity_end == expected_last_entity_end
+
+
+@pytest.mark.parametrize(
+    "expression, expected",
+    [
+        ("(weather&&what)", r"(?=.*weather)(?=.*what)"),
+        ("(weather&&what|tell)", "(?=.*weather)(?=.*what|tell)"),
+        ("no and operator here", "no and operator here"),
+    ],
+)
+def test_interpret_and_operator(expression, expected):
+    assert (
+        NLPregexExpression(expression, entities=None)._interpret_and_operator(
+            expression
+        )
+        == expected
+    )

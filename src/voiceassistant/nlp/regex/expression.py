@@ -1,13 +1,16 @@
 """Host logic for assistant specific regular expressions.
 
 These expressions are regex but allow to specify entity names.
-
 Example:
   - r"what's the weather in <location>"
   - r"google for <<query>>"
 
 Single brackets <> specify single word entities.
 Double brackets <<>> specify entities of few words.
+
+And-operator (&&) is also added on top of regex
+Example:
+   - "(a&&b)" is equivalent to "(?=.*a)(?=.*b)"
 """
 
 import re
@@ -22,6 +25,9 @@ _SHORT_ENTITY_REGEX = re.compile(r"(<\w+>)")
 
 _LONG_ENTITY_REPLACE = r"(.*)"
 _SHORT_ENTITY_REPLACE = r"([a-zA-Z0-9_]*)"
+
+_AND_OPERATOR = "&&"
+_AND_OPERATOR_PATTERN = re.compile(r"\(.*&&.*\)")
 
 
 class _FixedEntityName(str):
@@ -76,9 +82,26 @@ class NLPregexExpression:
 
     def _get_expression_regex(self, expression: str) -> re.Pattern:
         """Generate compiled regex from expression."""
+        interpretations = (
+            self._interpret_entity_names,
+            self._interpret_and_operator,
+        )
+        for interpretation in interpretations:
+            expression = interpretation(expression)
+        return re.compile(expression)
+
+    def _interpret_entity_names(self, expression: str) -> str:
+        """Convert entity names specified in expression into regex form."""
         regex = re.sub(_LONG_ENTITY_REGEX, _LONG_ENTITY_REPLACE, expression)
-        regex = re.sub(_SHORT_ENTITY_REGEX, _SHORT_ENTITY_REPLACE, regex)
-        return re.compile(regex)
+        return re.sub(_SHORT_ENTITY_REGEX, _SHORT_ENTITY_REPLACE, regex)
+
+    def _interpret_and_operator(self, expression: str) -> str:
+        """Convert expression with && operator into regex form."""
+        match = _AND_OPERATOR_PATTERN.search(expression)
+        if match:
+            parts = match.group(0)[1:-1].split(_AND_OPERATOR)
+            return "".join(f"(?=.*{part})" for part in parts)
+        return expression
 
     def _preprocess_hard_entities(
         self, entities: Optional[Dict]

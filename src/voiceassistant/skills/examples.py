@@ -8,8 +8,7 @@ from voiceassistant.utils.datastruct import DottedDict
 
 
 @regex_skill(
-    expressions=("what's the time", "what time is it",),
-    entities={"location": ("Moscow", "London")},
+    expressions=("(what&&time)",), entities={"location": ("Moscow", "London")},
 )
 def get_time(entities: DottedDict, interface: InterfaceType) -> None:
     """Get current time."""
@@ -17,7 +16,7 @@ def get_time(entities: DottedDict, interface: InterfaceType) -> None:
     interface.output(f"It's {time_now}")
 
 
-@regex_skill(expressions=("weather",),)
+@regex_skill(expressions=("(what&&weather)",),)
 def get_weather(entities: DottedDict, interface: InterfaceType) -> None:
     """Get weather."""
     interface.output("weather is nice")

@@ -1,4 +1,5 @@
 import pytest
+
 from voiceassistant.nlp.regex.skill import RegexSkillStruct
 
 
