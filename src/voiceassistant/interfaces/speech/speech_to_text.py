@@ -4,6 +4,7 @@ from typing import Generator
 
 from google.cloud import speech
 from iterators import TimeoutIterator
+
 from voiceassistant.interfaces.speech.microphone_stream import MicrophoneStream
 from voiceassistant.utils.config import Config
 
@@ -53,10 +54,10 @@ class SpeechToText:
             for content in stream.generator()
         )
         responses = self._client.streaming_recognize(
-            self._streaming_config, requests, timeout=25
+            self._streaming_config, requests, timeout=25  # type: ignore
         )
         responses = TimeoutIterator(responses, timeout=2)
-        timedout_response = responses.get_sentinel()
+        timedout_response = responses.get_sentinel()  # type: ignore
 
         for response in responses:
             # timeout in case user is not talking

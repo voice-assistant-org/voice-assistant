@@ -3,9 +3,9 @@
 from types import TracebackType
 from typing import Dict, Generator, List, Tuple, Type
 
+import pyaudio
 from six.moves import queue
 
-import pyaudio
 from voiceassistant.utils.datastruct import RollingWindowQueue
 
 

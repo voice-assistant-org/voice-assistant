@@ -48,9 +48,11 @@ class NaturalLanguageProcessor:
         self, text: RecognitionString
     ) -> RecognitionString:
         """Remove part of transcript that was already processed."""
+        # fmt: off
         return RecognitionString(
             text[self._last_text_length:].lower(), is_final=text.is_final
         )
+        # fmt: on
 
     def process_next_transcript(
         self, transcript: RecognitionString, interface: InterfaceType

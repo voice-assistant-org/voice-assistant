@@ -3,6 +3,7 @@
 import os
 
 import boto3
+
 from voiceassistant.utils.config import Config
 
 
