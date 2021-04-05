@@ -109,8 +109,10 @@ class NLPregexExpression:
         """Convert keys of hardcoded `entities` dict into _FixedEntityName."""
         if entities:
             for value in entities.values():
-                if not isinstance(value, tuple):
-                    raise NlpException("Entities must be specified as tuples")
+                if not isinstance(value, (tuple, list)):
+                    raise NlpException(
+                        "Entities must be specified as tuples or lists"
+                    )
             return {_FixedEntityName(k): v for k, v in entities.items()}
         return None
 

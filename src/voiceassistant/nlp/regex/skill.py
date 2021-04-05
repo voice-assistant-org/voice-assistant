@@ -1,6 +1,6 @@
 """Host regex skill struct."""
 
-from typing import Callable, Dict, Optional, Set, Tuple
+from typing import Callable, Dict, Optional, Set, Iterable
 
 from ..nlp_result import NlpResult
 from .expression import NlpExprMatch, NLPregexExpression
@@ -9,7 +9,7 @@ _REGEX_SKILLS = []
 
 
 def regex_skill(
-    expressions: Tuple[str, ...], entities: Optional[Dict] = None
+    expressions: Iterable[str], entities: Optional[Dict] = None
 ) -> Callable:
     """Regex based skill wrapper."""
 
@@ -31,7 +31,7 @@ class RegexSkillStruct:
     def __init__(
         self,
         func: Callable,
-        expressions: Tuple,
+        expressions: Iterable[str],
         entities: Optional[Dict] = None,
     ) -> None:
         """Create regex skill struct."""
