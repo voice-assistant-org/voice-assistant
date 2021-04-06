@@ -1,1 +1,0 @@
-"""Voice assistant Spotify integration."""
