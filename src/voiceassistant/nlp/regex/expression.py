@@ -10,7 +10,7 @@ Double brackets <<>> specify entities of few words.
 
 And-operator (&&) is also added on top of regex
 Example:
-   - "(a&&b)" is equivalent to "(?=.*a)(?=.*b)"
+   - "(a&&b)" is equivalent to "(?=.*(?:a))(?=.*(?:b))"
 """
 
 import re
@@ -100,7 +100,7 @@ class NLPregexExpression:
         match = _AND_OPERATOR_PATTERN.search(expression)
         if match:
             parts = match.group(0)[1:-1].split(_AND_OPERATOR)
-            return "".join(f"(?=.*{part})" for part in parts)
+            return "".join(f"(?=.*(?:{part}))" for part in parts)
         return expression
 
     def _preprocess_hard_entities(

@@ -43,8 +43,8 @@ def test_expression_match_finds_last_endity_end(
 @pytest.mark.parametrize(
     "expression, expected",
     [
-        ("(weather&&what)", r"(?=.*weather)(?=.*what)"),
-        ("(weather&&what|tell)", "(?=.*weather)(?=.*what|tell)"),
+        ("(weather&&what)", r"(?=.*(?:weather))(?=.*(?:what))"),
+        ("(weather&&what|tell)", "(?=.*(?:weather))(?=.*(?:what|tell))"),
         ("no and operator here", "no and operator here"),
     ],
 )
