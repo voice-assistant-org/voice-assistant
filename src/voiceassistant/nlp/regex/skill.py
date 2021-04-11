@@ -1,6 +1,6 @@
 """Host regex skill struct."""
 
-from typing import Callable, Dict, Optional, Set, Iterable
+from typing import Callable, Dict, Iterable, Optional, Set
 
 from ..nlp_result import NlpResult
 from .expression import NlpExprMatch, NLPregexExpression
