@@ -4,6 +4,7 @@ import copy
 from typing import Callable, List
 
 import hassapi
+
 from voiceassistant.interfaces import InterfaceType
 from voiceassistant.utils.datastruct import DottedDict
 

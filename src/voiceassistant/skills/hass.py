@@ -1,6 +1,7 @@
 """Home assistant control configurable skill."""
 
 import hassapi
+
 from voiceassistant.interfaces import InterfaceType
 from voiceassistant.nlp.regex import regex_skill
 from voiceassistant.utils.config import Config
