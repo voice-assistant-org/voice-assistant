@@ -3,6 +3,7 @@
 from types import TracebackType
 from typing import Optional, Set, Type
 
+from voiceassistant import addons
 from voiceassistant.interfaces import InterfaceType
 from voiceassistant.interfaces.speech import RecognitionString
 
@@ -15,12 +16,14 @@ NLP_PROCESSORS = (NLPregexProcessor(),)
 class NaturalLanguageProcessor:
     """Natural language processor class."""
 
+    @addons.call_at(start=addons.speech.processing_starts)
     def __enter__(self):  # type: ignore
         """Start natural language processor."""
         self._processed_results: Set[NlpResult] = set()
         self._last_text_length = 0
         return self
 
+    @addons.call_at(end=addons.speech.processing_ends)
     def __exit__(
         self,
         type: Type[BaseException],

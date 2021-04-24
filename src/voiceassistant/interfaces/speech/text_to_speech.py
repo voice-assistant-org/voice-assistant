@@ -4,6 +4,7 @@ import os
 
 import boto3
 
+from voiceassistant import addons
 from voiceassistant.utils.config import Config
 
 
@@ -19,6 +20,7 @@ class TextToSpeech:
             region_name=Config.aws.region_name,
         ).client("polly")
 
+    @addons.call_at(start=addons.speech.tts_starts, end=addons.speech.tts_ends)
     def say(self, text: str) -> None:
         """Pronounce `text` with configured Polly voice.
 

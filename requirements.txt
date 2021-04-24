@@ -6,3 +6,4 @@ pyyaml>=5.4.1
 pvporcupine>=1.9.3
 iterators>=0.0.2
 hassapi>=0.1.0
+pixel-ring==0.1.0
