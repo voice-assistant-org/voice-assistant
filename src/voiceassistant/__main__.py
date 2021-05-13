@@ -20,6 +20,11 @@ def _check_envvar() -> None:
         )
 
 
-if __name__ == "__main__":
+def main():
+    """Main entry point."""
     _check_envvar()
     run_voice_assistant()
+
+
+if __name__ == "__main__":
+    main()
