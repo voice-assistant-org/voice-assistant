@@ -1,29 +1,19 @@
 """Main file."""
 
-import os
-
-from voiceassistant.core import run_voice_assistant
-from voiceassistant.exceptions import AssistantBaseException
+from voiceassistant.exceptions import SetupIncomplete
+from voiceassistant.setup import pre_setup
 
 
-def _check_envvar() -> None:
-    """Check if all required environment variables are present."""
-    required_envvar = (
-        "GOOGLE_APPLICATION_CREDENTIALS",
-        "VOICE_ASSISTANT_CONFIGURATION",
-    )
-    missing_envvar = [var for var in required_envvar if var not in os.environ]
+def main() -> None:
+    """Run application."""
+    pre_setup()
 
-    if missing_envvar:
-        raise AssistantBaseException(
-            f"Missing environment variables: {', '.join(missing_envvar)}"
-        )
+    from voiceassistant.core import run_voice_assistant
 
-
-def main():
-    """Main entry point."""
-    _check_envvar()
-    run_voice_assistant()
+    try:
+        run_voice_assistant()
+    except SetupIncomplete as e:
+        print(f"Voice Assistant setup is incomplete:\n{e}")
 
 
 if __name__ == "__main__":

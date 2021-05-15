@@ -2,9 +2,11 @@
 
 from typing import Generator
 
+import google
 from google.cloud import speech
 from iterators import TimeoutIterator
 
+from voiceassistant.exceptions import SetupIncomplete
 from voiceassistant.interfaces.speech.microphone_stream import MicrophoneStream
 from voiceassistant.utils.config import Config
 
@@ -31,7 +33,11 @@ class SpeechToText:
 
     def __init__(self, rate: int):
         """Create speech-to-text object."""
-        self._client = speech.SpeechClient()
+        try:
+            self._client = speech.SpeechClient()
+        except google.auth.exceptions.DefaultCredentialsError as e:
+            raise SetupIncomplete(e)
+
         config = speech.RecognitionConfig(
             encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
             sample_rate_hertz=rate,

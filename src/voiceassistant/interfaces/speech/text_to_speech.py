@@ -3,8 +3,11 @@
 import os
 
 import boto3
+from botocore.exceptions import ClientError, NoCredentialsError
 
 from voiceassistant import addons
+from voiceassistant.const import DEFAULT_CONFIG_DIR
+from voiceassistant.exceptions import SetupIncomplete
 from voiceassistant.utils.config import Config
 
 
@@ -13,12 +16,17 @@ class TextToSpeech:
 
     def __init__(self) -> None:
         """Create text-to-speech object."""
-        self._audio_folder = self._get_audio_dir()
+        self._audio_folder = DEFAULT_CONFIG_DIR
         self._client = boto3.Session(
             aws_access_key_id=Config.aws.access_key_id,
             aws_secret_access_key=Config.aws.secret_access_key,
             region_name=Config.aws.region_name,
         ).client("polly")
+
+        try:
+            self._client.describe_voices()
+        except (NoCredentialsError, ClientError):
+            raise SetupIncomplete("Amazon Polly credentials not set")
 
     @addons.call_at(start=addons.speech.tts_starts, end=addons.speech.tts_ends)
     def say(self, text: str) -> None:
@@ -44,10 +52,3 @@ class TextToSpeech:
             VoiceId=Config.aws.voice_id, OutputFormat=format, Text=text
         )["AudioStream"].read()
         # ogg_vorbis
-
-    def _get_audio_dir(self) -> str:
-        """Get audio directory for temporarily writing audio file."""
-        dir = f"{os.path.expanduser('~')}/.voice-assistant"
-        if not os.path.exists(dir):
-            os.mkdir(dir)
-        return dir

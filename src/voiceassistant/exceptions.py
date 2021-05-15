@@ -7,3 +7,7 @@ class AssistantBaseException(Exception):
 
 class NlpException(AssistantBaseException):
     """Natural Language Processor Error."""
+
+
+class SetupIncomplete(AssistantBaseException):
+    """Setup Incomplete Exception."""

@@ -1,15 +1,15 @@
 """Config getter."""
 
-import os
-
 import yaml
+
+from voiceassistant.const import CONFIG_FILE_PATH
 
 from .datastruct import DottedDict
 
 
 def _get_assistant_config() -> DottedDict:
     """Get YAML config as dotted dictionary."""
-    with open(os.environ["VOICE_ASSISTANT_CONFIGURATION"]) as config_file:
+    with open(CONFIG_FILE_PATH) as config_file:
         config = yaml.load(config_file, Loader=yaml.FullLoader)
         _validate_config(config)
         return DottedDict(config)
