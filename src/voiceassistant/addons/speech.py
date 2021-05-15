@@ -4,10 +4,11 @@ from usb.core import USBError
 
 try:
     from pixel_ring import pixel_ring
-
+    
+    pixel_ring.off()
     _mic_is_respeaker = True
-except (USBError, ValueError, FileNotFoundError):
-    print("No ReSpeaker Microphone detected")
+except (USBError, ValueError, FileNotFoundError) as e:
+    print(f"No ReSpeaker Microphone detected: {e}")
     _mic_is_respeaker = False
 
 
