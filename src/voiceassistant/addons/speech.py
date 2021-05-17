@@ -4,7 +4,7 @@ from usb.core import USBError
 
 try:
     from pixel_ring import pixel_ring
-    
+
     pixel_ring.off()
     _mic_is_respeaker = True
 except (USBError, ValueError, FileNotFoundError) as e:
