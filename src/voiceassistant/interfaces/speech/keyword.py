@@ -5,13 +5,16 @@ from typing import List
 
 import pvporcupine
 
+from voiceassistant.utils.config import Config
+
 
 class KeywordDetector:
     """Keyword detector."""
 
-    def __init__(self, keywords: List) -> None:
+    def __init__(self) -> None:
         """Create Keyword detector object."""
-        self._detector = pvporcupine.create(keywords=keywords)
+        keyword = Config.get("keyword", "jarvis")
+        self._detector = pvporcupine.create(keywords=[keyword])
         self.rate = self._detector.sample_rate
         self.chunk_size = self._detector.frame_length
 

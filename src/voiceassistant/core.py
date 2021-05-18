@@ -7,18 +7,21 @@ from voiceassistant.interfaces.speech import (
     SpeechInterface,
 )
 from voiceassistant.nlp import NaturalLanguageProcessor
+from voiceassistant.utils.config import Config
 from voiceassistant.utils.debug import print_and_flush
 
 
 def run_voice_assistant() -> None:
     """Run Voice Assistant."""
-    keyword_detector = KeywordDetector(keywords=["jarvis"])
+    keyword_detector = KeywordDetector()
     speech = SpeechInterface(rate=keyword_detector.rate)
 
     while True:
         print("Creating microphone stream")
         with MicrophoneStream(
-            keyword_detector.rate, keyword_detector.chunk_size
+            rate=keyword_detector.rate,
+            chunk=keyword_detector.chunk_size,
+            rolling_window_sec=Config.get("prerecord_seconds", 3),
         ) as stream:
             while keyword_detector.process(stream.read()) < 0:
                 pass

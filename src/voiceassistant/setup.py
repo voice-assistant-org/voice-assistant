@@ -22,6 +22,8 @@ def pre_setup() -> None:
                 raise
 
     sample_config = {
+        "keyword": "jarvis",
+        "prerecord_seconds": 3,
         "google_cloud": {"language_code": "en-US"},
         "aws": {
             "access_key_id": "YOUR_KEY_ID",
