@@ -9,7 +9,7 @@ from six.moves import queue
 from voiceassistant.utils.datastruct import RollingWindowQueue
 
 
-class MicrophoneStream(object):
+class MicrophoneStream:
     """Opens a recording stream as a generator yielding the audio chunks."""
 
     def __init__(self, rate: int, chunk: int, rolling_window_sec: float = 3):
