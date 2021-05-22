@@ -1,5 +1,7 @@
 """Voice Assistant core components."""
 
+import traceback
+
 import voiceassistant.skills  # NOQA
 from voiceassistant.interfaces.speech import (
     KeywordDetector,
@@ -34,5 +36,5 @@ def run_voice_assistant() -> None:
                             transcript=transcript, interface=speech
                         )
                 except Exception as e:
-                    print(e)
+                    traceback.print_exc()
                     speech.output("Error occured")
