@@ -16,12 +16,6 @@ def get_time(entities: DottedDict, interface: InterfaceType) -> None:
     interface.output(f"It's {time_now}")
 
 
-@regex_skill(expressions=("(what&&weather)",),)
-def get_weather(entities: DottedDict, interface: InterfaceType) -> None:
-    """Get weather."""
-    interface.output("weather is nice")
-
-
 @regex_skill(expressions=("google for <<request>>",),)
 def google_for(entities: DottedDict, interface: InterfaceType) -> None:
     """Google for somthing."""
