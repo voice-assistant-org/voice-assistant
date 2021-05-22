@@ -53,7 +53,7 @@ def _register_hass_custom_skills(hass: hassapi.Hass) -> None:
     """Register HASS custom skills specified in Config.hass.skills."""
     for skill in Config.hass.skills:
         # register skill
-        regex_skill(expressions=skill.expressions)(
+        regex_skill(expressions=skill.expressions, name=skill.name)(
             make_skill_func(skill.actions, hass)
         )
 

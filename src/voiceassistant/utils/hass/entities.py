@@ -20,6 +20,7 @@ def hass_regex_skill(
         regex_skill(
             expressions=(f"({keywords_re}&&{names_re})",),
             entities={"hass_entity_name": names},
+            name=f"hass_{service}",
         )(func)
 
     return wrapper

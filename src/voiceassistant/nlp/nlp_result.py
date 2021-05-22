@@ -12,9 +12,14 @@ class NlpResult:
     """NLP Result class."""
 
     def __init__(
-        self, skill_func: Callable, entities: DottedDict, is_complete: bool
+        self,
+        skill_name: str,
+        skill_func: Callable,
+        entities: DottedDict,
+        is_complete: bool,
     ):
         """Init."""
+        self.skill_name = skill_name
         self.skill_func = skill_func
         self.entities = entities
         self.is_complete = is_complete
@@ -25,7 +30,7 @@ class NlpResult:
             (
                 "_" * 20,
                 "NLP Result:",
-                f"skill:    {self.skill_func.__name__}",
+                f"skill:    {self.skill_name}",
                 f"entities: {self.entities}",
                 f"complete: {self.is_complete}",
                 "_" * 20,

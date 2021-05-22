@@ -23,7 +23,7 @@ def dummy_skill_func():
 )
 def test_is_complete(expression, text, is_complete):
     regex_skill = RegexSkillStruct(
-        func=dummy_skill_func, expressions=[expression],
+        func=dummy_skill_func, expressions=[expression], name="dummy"
     )
     nlp_result = regex_skill.match(text)
     assert nlp_result

@@ -35,6 +35,6 @@ def run_voice_assistant() -> None:
                         nlp.process_next_transcript(
                             transcript=transcript, interface=speech
                         )
-                except Exception as e:
+                except Exception:
                     traceback.print_exc()
                     speech.output("Error occured")

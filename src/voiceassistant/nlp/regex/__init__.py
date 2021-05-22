@@ -3,7 +3,7 @@
 from typing import Optional
 
 from ..nlp_result import NlpResult
-from .skill import _REGEX_SKILLS, regex_skill
+from .skill import REGEX_SKILLS, regex_skill
 
 
 class NLPregexProcessor:
@@ -11,7 +11,7 @@ class NLPregexProcessor:
 
     def process(self, transcript: str) -> Optional[NlpResult]:
         """Process transcript by matching it to each skill."""
-        for skill in _REGEX_SKILLS:
+        for skill in REGEX_SKILLS.values():
             nlp_result = skill.match(transcript)
             if nlp_result:
                 return nlp_result

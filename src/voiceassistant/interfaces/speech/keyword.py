@@ -1,7 +1,6 @@
 """Keyword detector component."""
 
 import struct
-from typing import List
 
 import pvporcupine
 

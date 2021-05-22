@@ -1,25 +1,34 @@
 """Host regex skill struct."""
-
+import warnings
 from typing import Callable, Dict, Iterable, Optional, Set
 
 from ..nlp_result import NlpResult
 from .expression import NlpExprMatch, NLPregexExpression
 
-_REGEX_SKILLS = []
+REGEX_SKILLS = {}
 
 
 def regex_skill(
-    expressions: Iterable[str], entities: Optional[Dict] = None
+    expressions: Iterable[str],
+    entities: Optional[Dict] = None,
+    name: Optional[str] = None,
 ) -> Callable:
     """Regex based skill wrapper."""
 
     def wrapper(func: Callable) -> Callable:
-        _REGEX_SKILLS.append(
-            RegexSkillStruct(
-                func=func, expressions=expressions, entities=entities
+        skill_name = name or func.__name__
+        if skill_name in REGEX_SKILLS:
+            warnings.warn(
+                f"Skill {skill_name} is already registered, skipping"
             )
-        )
-        print(f"Skill added: {func.__name__}")
+        else:
+            REGEX_SKILLS[skill_name] = RegexSkillStruct(
+                name=skill_name,
+                func=func,
+                expressions=expressions,
+                entities=entities,
+            )
+            print(f"Skill added: {skill_name}")
         return func
 
     return wrapper
@@ -30,11 +39,13 @@ class RegexSkillStruct:
 
     def __init__(
         self,
+        name: str,
         func: Callable,
         expressions: Iterable[str],
         entities: Optional[Dict] = None,
     ) -> None:
         """Create regex skill struct."""
+        self.name = name
         self.func = func
         self.expressions = tuple(
             NLPregexExpression(expr, entities) for expr in expressions
@@ -73,6 +84,7 @@ class RegexSkillStruct:
             expr_match = expr.match(text)
             if expr_match:
                 return NlpResult(
+                    skill_name=self.name,
                     skill_func=self.func,
                     entities=expr_match.entities,
                     is_complete=self._is_complete(text, expr_match),
