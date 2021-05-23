@@ -4,6 +4,7 @@ import threading
 import traceback
 
 import voiceassistant.skills  # NOQA
+from voiceassistant.interfaces.http import HttpInterface
 from voiceassistant.interfaces.speech import (
     KeywordDetector,
     MicrophoneStream,
@@ -21,11 +22,13 @@ class VoiceAssistant:
         """Initialize Voice Assistant components."""
         self.keyword_detector = KeywordDetector()
         self.speech = SpeechInterface(rate=self.keyword_detector.rate)
+        self.http = HttpInterface(self)
 
     def run(self) -> None:
         """Run Voice Assistant jobs in separate threads."""
         jobs = (
             self._speech_interface_loop,
+            self.http.run,
         )
         for job in jobs:
             threading.Thread(target=job).start()
@@ -44,7 +47,9 @@ class VoiceAssistant:
                 print("Hotword detected.")
                 with NaturalLanguageProcessor() as nlp:
                     try:
-                        for transcript in self.speech.sst.recognize_from_stream(stream):
+                        for (
+                            transcript
+                        ) in self.speech.sst.recognize_from_stream(stream):
                             print_and_flush(transcript)
                             nlp.process_next_transcript(
                                 transcript=transcript, interface=self.speech
