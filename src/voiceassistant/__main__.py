@@ -8,10 +8,11 @@ def main() -> None:
     """Run application."""
     pre_setup()
 
-    from voiceassistant.core import run_voice_assistant
+    from voiceassistant.core import VoiceAssistant
 
     try:
-        run_voice_assistant()
+        vass = VoiceAssistant()
+        vass.run()
     except SetupIncomplete as e:
         print(f"Voice Assistant setup is incomplete:\n{e}")
 
