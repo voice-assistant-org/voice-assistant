@@ -1,6 +1,7 @@
 """API app factory."""
 
 from flask import Flask, Response, jsonify, request
+
 from voiceassistant.exceptions import ConfigValidationError
 from voiceassistant.nlp.regex import REGEX_SKILLS
 from voiceassistant.utils.config import Config, set_assistant_config

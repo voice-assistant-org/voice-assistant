@@ -7,6 +7,7 @@ from typing import Any, Callable
 
 import flask
 from flask import request
+
 from voiceassistant.const import DEFAULT_CONFIG_DIR
 
 
