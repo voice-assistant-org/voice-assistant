@@ -6,9 +6,9 @@ import google
 from google.cloud import speech
 from iterators import TimeoutIterator
 
+from voiceassistant.config import Config
 from voiceassistant.exceptions import SetupIncomplete
 from voiceassistant.interfaces.speech.microphone_stream import MicrophoneStream
-from voiceassistant.utils.config import Config
 
 
 class RecognitionString(str):
@@ -41,7 +41,7 @@ class SpeechToText:
         config = speech.RecognitionConfig(
             encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
             sample_rate_hertz=rate,
-            language_code=Config.google_cloud.language_code,
+            language_code=Config.stt.google_cloud.language_code,
         )
         self._streaming_config = speech.StreamingRecognitionConfig(
             config=config, interim_results=True

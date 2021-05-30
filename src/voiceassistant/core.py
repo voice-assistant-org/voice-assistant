@@ -4,6 +4,7 @@ import threading
 import traceback
 
 import voiceassistant.skills  # NOQA
+from voiceassistant.config import Config
 from voiceassistant.interfaces.http import HttpInterface
 from voiceassistant.interfaces.speech import (
     KeywordDetector,
@@ -11,7 +12,6 @@ from voiceassistant.interfaces.speech import (
     SpeechInterface,
 )
 from voiceassistant.nlp import NaturalLanguageProcessor
-from voiceassistant.utils.config import Config
 from voiceassistant.utils.debug import print_and_flush
 
 

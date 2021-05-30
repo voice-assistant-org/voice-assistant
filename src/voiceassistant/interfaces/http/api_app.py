@@ -2,9 +2,9 @@
 
 from flask import Flask, Response, jsonify, request
 
+from voiceassistant.config import Config
 from voiceassistant.exceptions import ConfigValidationError
 from voiceassistant.nlp.regex import REGEX_SKILLS
-from voiceassistant.utils.config import Config, set_assistant_config
 from voiceassistant.utils.datastruct import DottedDict
 
 from .auth import authorized
@@ -68,7 +68,7 @@ def api_factory(vass, app: Flask) -> Flask:  # type: ignore
         """
         new_config = request.get_json() or {}
         try:
-            set_assistant_config(new_config)
+            Config.write(new_config)
             return Response(status=200)
         except ConfigValidationError:
             return Response("Invalid config", status=406)

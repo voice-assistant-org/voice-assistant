@@ -1,7 +1,7 @@
 """Voice Assistant skills subpackage."""
 
 # flake8: noqa
-from voiceassistant.utils.config import Config
+from voiceassistant.config import Config
 
 from . import examples
 

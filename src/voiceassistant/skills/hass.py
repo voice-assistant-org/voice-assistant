@@ -2,9 +2,9 @@
 
 import hassapi
 
+from voiceassistant.config import Config
 from voiceassistant.interfaces import InterfaceType
 from voiceassistant.nlp.regex import regex_skill
-from voiceassistant.utils.config import Config
 from voiceassistant.utils.datastruct import DottedDict
 from voiceassistant.utils.hass import (
     get_entity_ids,

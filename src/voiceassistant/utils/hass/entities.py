@@ -4,8 +4,8 @@ from typing import Callable, Dict, Iterable, List, Set
 
 import hassapi
 
+from voiceassistant.config import Config
 from voiceassistant.nlp.regex import regex_skill
-from voiceassistant.utils.config import Config
 
 
 def hass_regex_skill(

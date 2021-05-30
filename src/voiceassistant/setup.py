@@ -22,15 +22,17 @@ def pre_setup() -> None:
                 raise
 
     sample_config = {
-        "keyword": "jarvis",
+        "triggerword": {"picovoice": {"word": "jarvis"}},
         "prerecord_seconds": 3,
-        "google_cloud": {"language_code": "en-US"},
-        "aws": {
-            "access_key_id": "YOUR_KEY_ID",
-            "secret_access_key": "YOUR_SECRET_ACCESS_KEY",
-            "region_name": "eu-west-2",
-            "voice_id": "Brian",
+        "tts": {
+            "aws": {
+                "access_key_id": "YOUR_KEY_ID",
+                "secret_access_key": "YOUR_SECRET_ACCESS_KEY",
+                "region_name": "eu-west-2",
+                "voice_id": "Brian",
+            },
         },
+        "stt": {"google_cloud": {"language_code": "en-US"}},
     }
 
     files_and_contents = (

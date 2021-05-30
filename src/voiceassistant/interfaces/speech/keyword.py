@@ -4,7 +4,7 @@ import struct
 
 import pvporcupine
 
-from voiceassistant.utils.config import Config
+from voiceassistant.config import Config
 
 
 class KeywordDetector:
@@ -12,7 +12,7 @@ class KeywordDetector:
 
     def __init__(self) -> None:
         """Create Keyword detector object."""
-        keyword = Config.get("keyword", "jarvis")
+        keyword = Config.triggerword.picovoice.word
         self._detector = pvporcupine.create(keywords=[keyword])
         self.rate = self._detector.sample_rate
         self.chunk_size = self._detector.frame_length
