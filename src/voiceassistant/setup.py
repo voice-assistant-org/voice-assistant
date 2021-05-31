@@ -22,7 +22,7 @@ def pre_setup() -> None:
                 raise
 
     sample_config = {
-        "triggerword": {"picovoice": {"word": "jarvis"}},
+        "triggerword": {"picovoice": {"word": "jarvis", "sensitivity": 0.5}},
         "prerecord_seconds": 3,
         "tts": {
             "aws": {
