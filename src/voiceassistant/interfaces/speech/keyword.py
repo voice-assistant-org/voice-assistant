@@ -7,6 +7,7 @@ import pvporcupine
 from voiceassistant.config import Config
 from voiceassistant.exceptions import ConfigValidationError
 
+
 class KeywordDetector:
     """Keyword detector."""
 
@@ -15,7 +16,9 @@ class KeywordDetector:
         keyword = Config.triggerword.picovoice.word
 
         if keyword not in pvporcupine.KEYWORDS:
-            raise ConfigValidationError(f"available keywords are {pvporcupine.KEYWORDS}")
+            raise ConfigValidationError(
+                f"available keywords are {pvporcupine.KEYWORDS}"
+            )
 
         self._detector = pvporcupine.create(
             keywords=[keyword],

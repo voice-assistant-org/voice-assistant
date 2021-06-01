@@ -16,8 +16,8 @@ try:
     ring_state = PixelRingState.off
 
     _mic_is_respeaker = True
-except (USBError, ValueError, FileNotFoundError) as e:
-    print(f"No ReSpeaker Microphone detected: {e}")
+except (USBError, ValueError, FileNotFoundError, PermissionError) as e:
+    print(f"No ReSpeaker Microphone detected or not able to connect: {e}")
     _mic_is_respeaker = False
 
 
