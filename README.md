@@ -101,19 +101,19 @@ hass:
 There are 2 types of integration with HASS:
 1) Exposing HASS entities, for example:
 	```yaml
-  hass:
-    ...
-    entities:
-      - ids:
-        - switch.bedroom_light_1
-        - switch.bedroom_light_2
-        names:
-        - lights
-      - ids:
-        - cover.curtain_bedroom
-        names:
-        - curtain
-        - blinds
+	  hass:
+	    ...
+	    entities:
+	      - ids:
+	        - switch.bedroom_light_1
+	        - switch.bedroom_light_2
+	        names:
+	        - lights
+	      - ids:
+	        - cover.curtain_bedroom
+	        names:
+	        - curtain
+	        - blinds
 	```
 
 	The above sample configuration will allow user to control lights and blinds with the following phrases:
@@ -140,18 +140,18 @@ There are 2 types of integration with HASS:
 
 	Consider an example:
 	```yaml
-  hass:
-    ...
-    skills:
-      - name: good_morning
-        expressions:
-          - good morning
-          - (wake&&time)
-        actions:
-        - action: run_script
-          script_id: good_morning
-        - action: say_from_template
-          template: Good Morning. The temperature outside is {{ state_attr('weather.my_home','temperature') }} degrees.
+	  hass:
+	    ...
+	    skills:
+	      - name: good_morning
+	        expressions:
+	          - good morning
+	          - (wake&&time)
+	        actions:
+	        - action: run_script
+	          script_id: good_morning
+	        - action: say_from_template
+	          template: Good Morning. The temperature outside is {{ state_attr('weather.my_home','temperature') }} degrees.
 	```
 	When user says *"good morning"* or  *"time to wake up"* Voice Assistant will execute two actions:
 	-  `run_script` - execute HASS script with id `good_morning`
