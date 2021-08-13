@@ -33,6 +33,7 @@ class MicrophoneStream:
             stream_callback=self._fill_buffer,
         )
         self._last_chunks: List[bytes] = []
+        self._paused = False
         self.closed = False
 
     def __enter__(self):  # type: ignore
@@ -61,9 +62,18 @@ class MicrophoneStream:
         status_flags: int,
     ) -> Tuple:
         """Continuously collect data from the audio stream into the buffer."""
-        self._buff.put(in_data)
-        self._last_chunks.append(in_data)
+        if not self._paused:
+            self._buff.put(in_data)
+            self._last_chunks.append(in_data)
         return None, pyaudio.paContinue
+
+    def pause(self):
+        """Pause microphone stream."""
+        self._paused = True
+
+    def resume(self):
+        """"Resume microphone stream."""
+        self._paused = False
 
     def read(self) -> bytes:
         """Get chunk of audio bytes."""
