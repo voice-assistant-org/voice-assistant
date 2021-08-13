@@ -34,16 +34,31 @@ class TextToSpeech:
             raise SetupIncomplete("Amazon Polly credentials not set")
 
     @addons.call_at(start=addons.speech.tts_starts, end=addons.speech.tts_ends)
-    def say(self, text: str) -> None:
+    def say(self, text: str, cache: bool = False) -> None:
         """Pronounce `text` with configured Polly voice.
 
         ToDo:
             Current implementation is bad and should later
             be changed to play audio bytes directly from memory.
         """
-        self.synthesize_to_mp3_file(text, filename="speech")
-        os.system(f"mpg123 {DEFAULT_CONFIG_DIR}/speech.mp3 >/dev/null 2>&1")
-        os.system(f"rm {DEFAULT_CONFIG_DIR}/speech.mp3")
+        if cache:
+            filename = text.replace(' ', '')
+
+            if not os.path.isfile(f"{DEFAULT_CONFIG_DIR}/{filename}.mp3"):
+                self.synthesize_to_mp3_file(text, filename=filename)
+                print(f"TTS cached: {text}")
+
+            self._play_mp3_file(filename)
+        else:
+            self.synthesize_to_mp3_file(text, filename="speech")
+            self._play_mp3_file("speech")
+            os.system(f"rm {DEFAULT_CONFIG_DIR}/speech.mp3")
+
+    def _play_mp3_file(self, filename: str) -> None:
+        """Play mp3 file."""
+        os.system(
+            f"mpg123 {DEFAULT_CONFIG_DIR}/{filename}.mp3 >/dev/null 2>&1"
+        )
 
     def synthesize_to_mp3_file(self, text: str, filename: str) -> None:
         """Save synthesized `text` to mp3 file."""

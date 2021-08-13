@@ -26,14 +26,14 @@ class SpeechInterface:
         """
         self._microphone_stream = stream
 
-    def output(self, text: str) -> None:
+    def output(self, text: str, cache: bool = False) -> None:
         """Pronounce text."""
         if self._microphone_stream:
             self._microphone_stream.pause()
-            self.tts.say(text)
+            self.tts.say(text, cache)
             self._microphone_stream.resume()
         else:
-            self.tts.say(text)
+            self.tts.say(text, cache)
 
     def input(self) -> str:
         """Recognize speech."""
