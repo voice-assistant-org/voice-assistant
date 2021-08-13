@@ -67,12 +67,12 @@ class MicrophoneStream:
             self._last_chunks.append(in_data)
         return None, pyaudio.paContinue
 
-    def pause(self):
+    def pause(self) -> None:
         """Pause microphone stream."""
         self._paused = True
 
-    def resume(self):
-        """"Resume microphone stream."""
+    def resume(self) -> None:
+        """Resume microphone stream."""
         self._paused = False
 
     def read(self) -> bytes:
