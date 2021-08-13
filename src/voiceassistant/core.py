@@ -1,5 +1,6 @@
 """Voice Assistant core components."""
 
+import random
 import threading
 import traceback
 
@@ -33,6 +34,15 @@ class VoiceAssistant:
         for job in jobs:
             threading.Thread(target=job).start()
 
+    def _respond_to_triggerword(self)-> None:
+        """Respond to trigger word."""
+        try:
+            self.speech.output(
+                text=random.choice(Config.triggerword.replies), cache=True,
+            )
+        except AttributeError:
+            pass
+
     def _speech_interface_loop(self) -> None:
         """Listen for keyword and process speech."""
         while True:
@@ -48,6 +58,7 @@ class VoiceAssistant:
                     pass
 
                 print("Hotword detected")
+                self._respond_to_triggerword()
 
                 with NaturalLanguageProcessor() as nlp:
                     try:
@@ -60,4 +71,4 @@ class VoiceAssistant:
                             )
                     except Exception:
                         traceback.print_exc()
-                        self.speech.output("Error occured")
+                        self.speech.output("Error occured", cache=True)

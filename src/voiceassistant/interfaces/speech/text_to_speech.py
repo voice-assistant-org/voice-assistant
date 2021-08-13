@@ -42,7 +42,7 @@ class TextToSpeech:
             be changed to play audio bytes directly from memory.
         """
         if cache:
-            filename = text.replace(' ', '')
+            filename = text.replace(" ", "")
 
             if not os.path.isfile(f"{DEFAULT_CONFIG_DIR}/{filename}.mp3"):
                 self.synthesize_to_mp3_file(text, filename=filename)
