@@ -1,5 +1,6 @@
 
 # Voice Assistant
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/voiceassistant?style=flat-square)](https://pypistats.org/packages/voiceassistant)
 Open-source customizable voice assistant
 
 ## Features
