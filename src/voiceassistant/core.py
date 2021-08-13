@@ -42,9 +42,13 @@ class VoiceAssistant:
                 chunk=self.keyword_detector.chunk_size,
                 rolling_window_sec=Config.get("prerecord_seconds", 3),
             ) as stream:
+                self.speech.set_microphone_stream(stream)
+
                 while self.keyword_detector.process(stream.read()) < 0:
                     pass
-                print("Hotword detected.")
+
+                print("Hotword detected")
+
                 with NaturalLanguageProcessor() as nlp:
                     try:
                         for (
