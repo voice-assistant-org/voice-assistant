@@ -15,3 +15,7 @@ class NlpException(AssistantBaseException):
 
 class SetupIncomplete(AssistantBaseException):
     """Setup Incomplete Exception."""
+
+
+class DottedAttribureError(AttributeError, AssistantBaseException):
+    """Dotted Dictionary Attribute Error."""

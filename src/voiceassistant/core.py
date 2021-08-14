@@ -6,6 +6,7 @@ import traceback
 
 import voiceassistant.skills  # NOQA
 from voiceassistant.config import Config
+from voiceassistant.exceptions import DottedAttribureError
 from voiceassistant.interfaces.http import HttpInterface
 from voiceassistant.interfaces.speech import (
     KeywordDetector,
@@ -40,7 +41,7 @@ class VoiceAssistant:
             self.speech.output(
                 text=random.choice(Config.triggerword.replies), cache=True,
             )
-        except AttributeError:
+        except DottedAttribureError:
             pass
 
     def _speech_interface_loop(self) -> None:

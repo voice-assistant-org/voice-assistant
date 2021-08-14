@@ -4,6 +4,8 @@ from typing import Any
 
 from six.moves import queue
 
+from voiceassistant.exceptions import DottedAttribureError
+
 
 class DottedDict(dict):
     """Python dict with dot-syntax added on top."""
@@ -21,14 +23,14 @@ class DottedDict(dict):
             else:
                 return attr
         except KeyError as e:
-            raise AttributeError(e)
+            raise DottedAttribureError(e)
 
     def __setattr__(self, key: str, value: Any) -> None:
         """Set attribute."""
         try:
             self[key] = value
         except KeyError as e:
-            raise AttributeError(e)
+            raise DottedAttribureError(e)
 
 
 class RollingWindowQueue:
