@@ -1,12 +1,11 @@
 """Voice Assistant core components."""
 
-import random
 import threading
 import traceback
 
 import voiceassistant.skills  # NOQA
+from voiceassistant.addons import keyword as keyword_addon
 from voiceassistant.config import Config
-from voiceassistant.exceptions import DottedAttribureError
 from voiceassistant.interfaces.http import HttpInterface
 from voiceassistant.interfaces.speech import (
     KeywordDetector,
@@ -35,15 +34,6 @@ class VoiceAssistant:
         for job in jobs:
             threading.Thread(target=job).start()
 
-    def _respond_to_triggerword(self) -> None:
-        """Respond to trigger word."""
-        try:
-            self.speech.output(
-                text=random.choice(Config.triggerword.replies), cache=True,
-            )
-        except DottedAttribureError:
-            pass
-
     def _speech_interface_loop(self) -> None:
         """Listen for keyword and process speech."""
         while True:
@@ -57,7 +47,7 @@ class VoiceAssistant:
                     pass
 
                 print("Hotword detected")
-                self._respond_to_triggerword()
+                keyword_addon.react_to_keyword(self)
 
                 with NaturalLanguageProcessor() as nlp:
                     try:

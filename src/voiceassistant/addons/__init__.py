@@ -3,7 +3,8 @@
 from typing import Any, Callable, Optional
 
 # flake8: noqa
-from . import speech
+# from . import speech
+# from . import keyword
 
 
 def call_at(
