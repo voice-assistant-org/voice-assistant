@@ -35,7 +35,7 @@ class VoiceAssistant:
         for job in jobs:
             threading.Thread(target=job).start()
 
-    def _respond_to_triggerword(self)-> None:
+    def _respond_to_triggerword(self) -> None:
         """Respond to trigger word."""
         try:
             self.speech.output(
@@ -53,8 +53,6 @@ class VoiceAssistant:
                 chunk=self.keyword_detector.chunk_size,
                 rolling_window_sec=Config.get("prerecord_seconds", 3),
             ) as stream:
-                self.speech.set_microphone_stream(stream)
-
                 while self.keyword_detector.process(stream.read()) < 0:
                     pass
 

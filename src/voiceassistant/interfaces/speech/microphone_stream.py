@@ -8,6 +8,20 @@ from six.moves import queue
 
 from voiceassistant.utils.datastruct import RollingWindowQueue
 
+_PAUSED = False
+
+
+def pause_microphone_stream() -> None:
+    """Pause microphone stream."""
+    global _PAUSED
+    _PAUSED = True
+
+
+def resume_microphone_stream() -> None:
+    """Resume microphone stream."""
+    global _PAUSED
+    _PAUSED = False
+
 
 class MicrophoneStream:
     """Opens a recording stream as a generator yielding the audio chunks."""
@@ -33,7 +47,6 @@ class MicrophoneStream:
             stream_callback=self._fill_buffer,
         )
         self._last_chunks: List[bytes] = []
-        self._paused = False
         self.closed = False
 
     def __enter__(self):  # type: ignore
@@ -62,18 +75,10 @@ class MicrophoneStream:
         status_flags: int,
     ) -> Tuple:
         """Continuously collect data from the audio stream into the buffer."""
-        if not self._paused:
+        if not _PAUSED:
             self._buff.put(in_data)
             self._last_chunks.append(in_data)
         return None, pyaudio.paContinue
-
-    def pause(self) -> None:
-        """Pause microphone stream."""
-        self._paused = True
-
-    def resume(self) -> None:
-        """Resume microphone stream."""
-        self._paused = False
 
     def read(self) -> bytes:
         """Get chunk of audio bytes."""

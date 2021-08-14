@@ -2,6 +2,11 @@
 
 from usb.core import USBError
 
+from voiceassistant.interfaces.speech import (
+    pause_microphone_stream,
+    resume_microphone_stream,
+)
+
 try:
     from pixel_ring import pixel_ring
 
@@ -39,12 +44,14 @@ def processing_ends() -> None:
 
 def tts_starts() -> None:
     """Do before voice output starts."""
+    pause_microphone_stream()
     if _mic_is_respeaker:
         pixel_ring.think()
 
 
 def tts_ends() -> None:
     """Do when voice output ends."""
+    resume_microphone_stream()
     if _mic_is_respeaker:
         if ring_state == PixelRingState.speak:
             pixel_ring.speak()
