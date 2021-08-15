@@ -22,7 +22,7 @@ def _react_by_sound(vass) -> None:  # type: ignore
     subprocess.Popen(["mpg123", _get_soundfile_path(Config.triggerword.sound)])
 
 
-@lru_cache
+@lru_cache()
 def _get_soundfile_path(name: str) -> str:
     """Get triggerword reaction sound path."""
     path_preset = f"{DATA_DIR}/audio/{name}.mp3"
