@@ -4,8 +4,11 @@ import struct
 
 import pvporcupine
 
+from voiceassistant.addons import keyword as keyword_addon
 from voiceassistant.config import Config
 from voiceassistant.exceptions import ConfigValidationError
+
+from .microphone_stream import MicrophoneStream
 
 
 class KeywordDetector:
@@ -36,3 +39,15 @@ class KeywordDetector:
         """
         pcm = struct.unpack_from("h" * self.chunk_size, audio_chunk)
         return self._detector.process(pcm)  # type: ignore
+
+    def not_detected(self, audio_chunk: bytes) -> bool:
+        """Determine if keyword was not detected."""
+        return self.process(audio_chunk) < 0
+
+    def wait_untill_detected(  # type: ignore
+        self, stream: MicrophoneStream, vass
+    ) -> None:
+        """Wait till keyword was detected."""
+        while self.not_detected(stream.read()):
+            pass
+        keyword_addon.react_to_keyword(vass)

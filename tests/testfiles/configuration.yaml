@@ -20,3 +20,7 @@ hass:
 location:
   room: Bedroom
 
+triggerword:
+  picovoice:
+    word: jarvis
+    sensitivity: 0.5

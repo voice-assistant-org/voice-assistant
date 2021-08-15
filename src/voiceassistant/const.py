@@ -3,6 +3,7 @@
 import os
 
 DEFAULT_CONFIG_DIR = f"{os.path.expanduser('~')}/.config/voiceassistant"
+DATA_DIR = f"{os.path.dirname(os.path.realpath(__file__))}/data"
 
 # must be set in order to construct google.cloud.speech.SpeechClient
 if "GOOGLE_APPLICATION_CREDENTIALS" not in os.environ:

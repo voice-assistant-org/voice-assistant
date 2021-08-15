@@ -4,7 +4,6 @@ import threading
 import traceback
 
 import voiceassistant.skills  # NOQA
-from voiceassistant.addons import keyword as keyword_addon
 from voiceassistant.config import Config
 from voiceassistant.interfaces.http import HttpInterface
 from voiceassistant.interfaces.speech import (
@@ -43,11 +42,7 @@ class VoiceAssistant:
                 chunk=self.keyword_detector.chunk_size,
                 rolling_window_sec=Config.get("prerecord_seconds", 3),
             ) as stream:
-                while self.keyword_detector.process(stream.read()) < 0:
-                    pass
-
-                print("Hotword detected")
-                keyword_addon.react_to_keyword(self)
+                self.keyword_detector.wait_untill_detected(stream, self)
 
                 with NaturalLanguageProcessor() as nlp:
                     try:
