@@ -4,13 +4,15 @@ from typing import Callable
 
 from flask import Flask
 
+from voiceassistant.interfaces.base import BaseInterface
+
 from .api_app import api_factory
 from .helpers import get_my_ip
 
 PORT = 5050
 
 
-class HttpInterface:
+class HttpInterface(BaseInterface):
     """HTTP interface."""
 
     def __init__(self, vass) -> None:  # type: ignore

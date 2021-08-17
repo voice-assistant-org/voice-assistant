@@ -5,14 +5,14 @@ from typing import Callable, List
 
 import hassapi
 
-from voiceassistant.interfaces import InterfaceType
+from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.datastruct import DottedDict
 
 
 def make_skill_func(actions: List[DottedDict], hass: hassapi.Hass) -> Callable:
     """Build skill function for a list of `actions` from Config."""
 
-    def _hass_actions(entities: DottedDict, interface: InterfaceType) -> None:
+    def _hass_actions(entities: DottedDict, interface: InterfaceIO) -> None:
         """Run actions in a loop."""
         for action_data in copy.deepcopy(actions):
             action_name = action_data.pop("action")
@@ -24,14 +24,14 @@ def make_skill_func(actions: List[DottedDict], hass: hassapi.Hass) -> Callable:
 
 
 def _say_from_template(
-    hass: hassapi.Hass, interface: InterfaceType, data: DottedDict
+    hass: hassapi.Hass, interface: InterfaceIO, data: DottedDict
 ) -> None:
     """Render HASS Jinja2 template and output result via `interface`."""
     interface.output(hass.render_template(template=data.template))
 
 
 def _call_service(
-    hass: hassapi.Hass, interface: InterfaceType, data: DottedDict
+    hass: hassapi.Hass, interface: InterfaceIO, data: DottedDict
 ) -> None:
     """Call HASS service."""
     hass.call_service(
@@ -40,21 +40,21 @@ def _call_service(
 
 
 def _fire_event(
-    hass: hassapi.Hass, interface: InterfaceType, data: DottedDict
+    hass: hassapi.Hass, interface: InterfaceIO, data: DottedDict
 ) -> None:
     """Fire HASS event."""
     hass.fire_event(event_type=data.event_type, event_data=data.event_data)
 
 
 def _set_state(
-    hass: hassapi.Hass, interface: InterfaceType, data: DottedDict
+    hass: hassapi.Hass, interface: InterfaceIO, data: DottedDict
 ) -> None:
     """Set state of a HASS entity."""
     hass.set_state(entity_id=data.entity_id, state=data.state)
 
 
 def _run_script(
-    hass: hassapi.Hass, interface: InterfaceType, data: DottedDict
+    hass: hassapi.Hass, interface: InterfaceIO, data: DottedDict
 ) -> None:
     """Run HASS script."""
     hass.run_script(data.script_id)

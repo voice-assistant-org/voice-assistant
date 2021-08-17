@@ -1,7 +1,6 @@
 """Voice Assistant interfaces."""
 
-from typing import Union
-
+from .http import HttpInterface
 from .speech import SpeechInterface
 
-InterfaceType = Union[SpeechInterface]
+__all__ = ["SpeechInterface", "HttpInterface"]

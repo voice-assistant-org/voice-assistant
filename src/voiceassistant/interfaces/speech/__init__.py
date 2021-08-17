@@ -1,5 +1,7 @@
 """Voice interface subpackage."""
 
+from voiceassistant.interfaces.base import InterfaceIO
+
 from .keyword import KeywordDetector
 from .microphone_stream import (
     MicrophoneStream,
@@ -10,7 +12,7 @@ from .speech_to_text import RecognitionString, SpeechToText
 from .text_to_speech import TextToSpeech
 
 
-class SpeechInterface:
+class SpeechInterface(InterfaceIO):
     """Speech interface."""
 
     def __init__(self, rate: int):
@@ -24,6 +26,10 @@ class SpeechInterface:
 
     def input(self) -> str:
         """Recognize speech."""
+        pass
+
+    def run(self) -> None:
+        """Run speech interface."""
         pass
 
 

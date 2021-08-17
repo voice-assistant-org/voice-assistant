@@ -3,7 +3,7 @@
 import hassapi
 
 from voiceassistant.config import Config
-from voiceassistant.interfaces import InterfaceType
+from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.nlp.regex import regex_skill
 from voiceassistant.utils.datastruct import DottedDict
 from voiceassistant.utils.hass import (
@@ -18,7 +18,7 @@ hass = hassapi.Hass(
 
 
 @hass_regex_skill("turn_on", keywords=("on", "enable", "start"), hass=hass)
-def turn_on(entities: DottedDict, interface: InterfaceType) -> None:
+def turn_on(entities: DottedDict, interface: InterfaceIO) -> None:
     """Turn on HASS entity."""
     for entity_id in get_entity_ids(entities.hass_entity_name):
         hass.turn_on(entity_id)
@@ -26,7 +26,7 @@ def turn_on(entities: DottedDict, interface: InterfaceType) -> None:
 
 
 @hass_regex_skill("turn_off", keywords=("off", "disable"), hass=hass)
-def turn_off(entities: DottedDict, interface: InterfaceType) -> None:
+def turn_off(entities: DottedDict, interface: InterfaceIO) -> None:
     """Turn off HASS entity."""
     for entity_id in get_entity_ids(entities.hass_entity_name):
         hass.turn_off(entity_id)
@@ -34,7 +34,7 @@ def turn_off(entities: DottedDict, interface: InterfaceType) -> None:
 
 
 @hass_regex_skill("open_cover", keywords=("up", "open"), hass=hass)
-def open_cover(entities: DottedDict, interface: InterfaceType) -> None:
+def open_cover(entities: DottedDict, interface: InterfaceIO) -> None:
     """Call open_cover service for HASS cover entity e.g. blinds."""
     for entity_id in get_entity_ids(entities.hass_entity_name):
         hass.open_cover(entity_id)
@@ -42,7 +42,7 @@ def open_cover(entities: DottedDict, interface: InterfaceType) -> None:
 
 
 @hass_regex_skill("close_cover", keywords=("down", "close"), hass=hass)
-def close_cover(entities: DottedDict, interface: InterfaceType) -> None:
+def close_cover(entities: DottedDict, interface: InterfaceIO) -> None:
     """Call close_cover service for HASS cover entity e.g. blinds."""
     for entity_id in get_entity_ids(entities.hass_entity_name):
         hass.close_cover(entity_id)

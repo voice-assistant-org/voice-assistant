@@ -4,7 +4,7 @@ from types import TracebackType
 from typing import Optional, Set, Type
 
 from voiceassistant import addons
-from voiceassistant.interfaces import InterfaceType
+from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.interfaces.speech import RecognitionString
 
 from .nlp_result import NlpResult
@@ -58,7 +58,7 @@ class NaturalLanguageProcessor:
         # fmt: on
 
     def process_next_transcript(
-        self, transcript: RecognitionString, interface: InterfaceType
+        self, transcript: RecognitionString, interface: InterfaceIO
     ) -> None:
         """Process a sequence of transcripts.
 

@@ -4,7 +4,7 @@ Should be a return type of all NL processors.
 """
 from typing import Any, Callable, Tuple
 
-from voiceassistant.interfaces import InterfaceType
+from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.datastruct import DottedDict
 
 
@@ -53,7 +53,7 @@ class NlpResult:
         """Check equality with another NlpResult instance."""
         return self._key() == other._key()  # type: ignore
 
-    def execute_skill(self, interface: InterfaceType) -> None:
+    def execute_skill(self, interface: InterfaceIO) -> None:
         """Execute skill function from NLP result."""
         print(self)
         self.skill_func(entities=self.entities, interface=interface)
