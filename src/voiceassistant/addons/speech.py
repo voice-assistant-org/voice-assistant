@@ -9,6 +9,16 @@ from voiceassistant.interfaces.speech.microphone_stream import (
 
 try:
     from pixel_ring import pixel_ring
+    from pixel_ring import apa102_pixel_ring
+
+    if isinstance(pixel_ring, apa102_pixel_ring.PixelRing):
+        print("Found ReSpeaker 4 Mic Array")
+
+        from gpiozero import LED
+
+        power = LED(5)
+        power.on()
+        pixel_ring.change_pattern("echo")
 
     class PixelRingState:
         """Host pixel ring states."""
@@ -21,7 +31,13 @@ try:
     ring_state = PixelRingState.off
 
     _mic_is_respeaker = True
-except (USBError, ValueError, FileNotFoundError, PermissionError) as e:
+except (
+    USBError,
+    ValueError,
+    FileNotFoundError,
+    PermissionError,
+    ImportError,
+) as e:
     print(f"No ReSpeaker Microphone detected or not able to connect: {e}")
     _mic_is_respeaker = False
 
