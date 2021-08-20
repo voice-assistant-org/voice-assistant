@@ -6,8 +6,6 @@ import boto3
 from botocore.config import Config as BotoConfig
 from botocore.exceptions import ClientError, NoCredentialsError
 
-from voiceassistant import addons
-from voiceassistant.addons import speech as speech_addon
 from voiceassistant.config import Config
 from voiceassistant.const import DEFAULT_CONFIG_DIR
 from voiceassistant.exceptions import SetupIncomplete
@@ -34,7 +32,6 @@ class TextToSpeech:
         except (NoCredentialsError, ClientError):
             raise SetupIncomplete("Amazon Polly credentials not set")
 
-    @addons.call_at(start=speech_addon.tts_starts, end=speech_addon.tts_ends)
     def say(self, text: str, cache: bool = False) -> None:
         """Pronounce `text` with configured Polly voice.
 

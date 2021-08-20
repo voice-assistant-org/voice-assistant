@@ -2,7 +2,7 @@
 
 from usb.core import USBError
 
-from voiceassistant.interfaces.speech import (
+from voiceassistant.interfaces.speech.microphone_stream import (
     pause_microphone_stream,
     resume_microphone_stream,
 )

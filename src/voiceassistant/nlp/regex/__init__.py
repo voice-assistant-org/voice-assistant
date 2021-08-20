@@ -2,7 +2,8 @@
 
 from typing import Optional
 
-from ..nlp_result import NlpResult
+from voiceassistant.nlp.nlp_result import NlpResult
+
 from .skill import REGEX_SKILLS, regex_skill
 
 

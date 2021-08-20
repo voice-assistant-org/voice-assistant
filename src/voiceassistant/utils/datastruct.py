@@ -58,3 +58,20 @@ class RollingWindowQueue:
         """Get element from the queue."""
         self._current_size -= 1
         return self._buffer.get(block=block)
+
+
+class RecognitionString(str):
+    """Modify string object to have `is_final` attribute.
+
+    Required to differentiate between cases where
+    continious speech recognition is still running
+    or whether recognition result is final.
+    """
+
+    is_final = False
+
+    def __new__(cls, value: str, is_final: bool):  # type: ignore
+        """Create recognition string object."""
+        self_obj = str.__new__(cls, value)
+        self_obj.is_final = is_final
+        return self_obj

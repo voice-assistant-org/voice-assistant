@@ -1,14 +1,16 @@
 """Natural language processor component."""
 
 from types import TracebackType
-from typing import Optional, Set, Type
+from typing import TYPE_CHECKING, Optional, Set, Type
 
-from voiceassistant import addons
-from voiceassistant.interfaces.base import InterfaceIO
-from voiceassistant.interfaces.speech import RecognitionString
+from voiceassistant.utils.datastruct import RecognitionString
 
 from .nlp_result import NlpResult
 from .regex import NLPregexProcessor
+
+if TYPE_CHECKING:
+    from voiceassistant.interfaces.base import InterfaceIO
+
 
 NLP_PROCESSORS = (NLPregexProcessor(),)
 
@@ -16,14 +18,12 @@ NLP_PROCESSORS = (NLPregexProcessor(),)
 class NaturalLanguageProcessor:
     """Natural language processor class."""
 
-    @addons.call_at(start=addons.speech.processing_starts)
     def __enter__(self):  # type: ignore
         """Start natural language processor."""
         self._processed_results: Set[NlpResult] = set()
         self._last_text_length = 0
         return self
 
-    @addons.call_at(end=addons.speech.processing_ends)
     def __exit__(
         self,
         type: Type[BaseException],
@@ -58,7 +58,7 @@ class NaturalLanguageProcessor:
         # fmt: on
 
     def process_next_transcript(
-        self, transcript: RecognitionString, interface: InterfaceIO
+        self, transcript: RecognitionString, interface: "InterfaceIO"
     ) -> None:
         """Process a sequence of transcripts.
 

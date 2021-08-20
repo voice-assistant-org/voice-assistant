@@ -2,10 +2,12 @@
 
 Should be a return type of all NL processors.
 """
-from typing import Any, Callable, Tuple
+from typing import TYPE_CHECKING, Any, Callable, Tuple
 
-from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.datastruct import DottedDict
+
+if TYPE_CHECKING:
+    from voiceassistant.interfaces.base import InterfaceIO
 
 
 class NlpResult:
@@ -53,7 +55,7 @@ class NlpResult:
         """Check equality with another NlpResult instance."""
         return self._key() == other._key()  # type: ignore
 
-    def execute_skill(self, interface: InterfaceIO) -> None:
+    def execute_skill(self, interface: "InterfaceIO") -> None:
         """Execute skill function from NLP result."""
         print(self)
         self.skill_func(entities=self.entities, interface=interface)

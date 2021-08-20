@@ -4,9 +4,10 @@ import struct
 
 import pvporcupine
 
-from voiceassistant.addons import keyword as keyword_addon
+from voiceassistant import addons
 from voiceassistant.config import Config
 from voiceassistant.exceptions import ConfigValidationError
+from voiceassistant.interfaces.base import InterfaceIO
 
 from .microphone_stream import MicrophoneStream
 
@@ -44,10 +45,10 @@ class KeywordDetector:
         """Determine if keyword was not detected."""
         return self.process(audio_chunk) < 0
 
-    def wait_untill_detected(  # type: ignore
-        self, stream: MicrophoneStream, vass
+    def wait_untill_detected(
+        self, stream: MicrophoneStream, interface: InterfaceIO
     ) -> None:
         """Wait till keyword was detected."""
         while self.not_detected(stream.read()):
             pass
-        keyword_addon.react_to_keyword(vass)
+        addons.keyword.react_to_keyword(interface)

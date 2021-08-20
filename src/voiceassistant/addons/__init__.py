@@ -2,9 +2,7 @@
 
 from typing import Any, Callable, Optional
 
-# flake8: noqa
-# from . import speech
-# from . import keyword
+from . import keyword, speech
 
 
 def call_at(
@@ -27,3 +25,6 @@ def call_at(
         return inner
 
     return wrapper
+
+
+__all__ = ["call_at", "keyword", "speech"]
