@@ -15,8 +15,8 @@ Open-source customizable voice assistant
 1. Install dependencies:
 	```bash
 	sudo apt-get update
-	sudo apt-get install -y libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0\
-	python3-pyaudio python3-venv mpg123
+	sudo apt-get install -y libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0 \
+	python3-dev python3-pyaudio python3-venv mpg123
 	```
 2. Create virtual environment and install with pip:
 	```bash
