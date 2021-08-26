@@ -2,7 +2,8 @@
 import warnings
 from typing import Callable, Dict, Iterable, Optional, Set
 
-from ..nlp_result import NlpResult
+from voiceassistant.nlp.base import NlpResult
+
 from .expression import NlpExprMatch, NLPregexExpression
 
 REGEX_SKILLS = {}

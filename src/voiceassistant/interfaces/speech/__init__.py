@@ -5,7 +5,7 @@ import traceback
 from voiceassistant import addons
 from voiceassistant.config import Config
 from voiceassistant.interfaces.base import InterfaceIO
-from voiceassistant.nlp import NaturalLanguageProcessor
+from voiceassistant.nlp import NaturalLanguageHandler
 from voiceassistant.utils.debug import print_and_flush
 
 from .keyword import KeywordDetector
@@ -49,13 +49,12 @@ class SpeechInterface(InterfaceIO):
         end=addons.speech.processing_ends,
     )
     def _process_speech(self, stream: MicrophoneStream) -> None:
-        with NaturalLanguageProcessor() as nlp:
+        """Handle speech from audio `stream`."""
+        with NaturalLanguageHandler(interface=self) as handler:
             try:
                 for transcript in self.sst.recognize_from_stream(stream):
                     print_and_flush(transcript)
-                    nlp.process_next_transcript(
-                        transcript=transcript, interface=self
-                    )
+                    handler.handle_next_transcript(transcript=transcript)
             except Exception:
                 traceback.print_exc()
                 self.output("Error occured", cache=True)

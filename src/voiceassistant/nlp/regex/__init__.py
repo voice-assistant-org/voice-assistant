@@ -2,12 +2,12 @@
 
 from typing import Optional
 
-from voiceassistant.nlp.nlp_result import NlpResult
+from voiceassistant.nlp.base import BaseNLP, NlpResult
 
 from .skill import REGEX_SKILLS, regex_skill
 
 
-class NLPregexProcessor:
+class NLPregexProcessor(BaseNLP):
     """NL regex processor."""
 
     def process(self, transcript: str) -> Optional[NlpResult]:
