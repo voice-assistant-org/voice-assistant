@@ -5,7 +5,7 @@ from __future__ import annotations
 import abc
 from typing import TYPE_CHECKING, Dict, List
 
-from voiceassistant.skills.base import Action, Skill
+from voiceassistant.skills.factory import Action, Skill
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
