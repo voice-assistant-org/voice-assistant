@@ -14,6 +14,7 @@ Example:
 """
 
 import re
+from dataclasses import dataclass
 from typing import Dict, Optional, Tuple, Union
 
 from voiceassistant.exceptions import NlpException
@@ -45,28 +46,38 @@ class _VariableEntityName(str):
 EntityNameType = Union[_FixedEntityName, _VariableEntityName]
 
 
-class NlpExprMatch:
+@dataclass
+class ExpressionMatch:
     """Nlp expression match class."""
 
-    def __init__(self, entity_names: Tuple[EntityNameType, ...]):  # noqa
-        """Init."""
-        self.entity_names = entity_names
-        self.entities = DottedDict()
+    text: str
+    entity_names: Tuple[EntityNameType, ...]
+    entities: DottedDict
+    last_entity_end: Optional[int]
 
-    def __str__(self) -> str:
-        """Get object string representation."""
-        return f"{self.entities}"
+    @property
+    def is_complete(self) -> bool:
+        """Determine if text has enough info to be processed."""
+        # expression has no entities at all
+        if not self.entity_names:
+            return True
 
-    def update_entities(self, new: Dict) -> None:
-        """Update entities dictionary."""
-        self.entities.update(new)
+        # last matched entity is fixed
+        if self.entity_names[-1].fixed:
+            return True
 
-    def set_last_entity_end(self, end: int) -> None:
-        """Set the position of last entity end."""
-        self.last_entity_end = end
+        # all found entities are fixed
+        if all(ent.fixed for ent in self.entity_names):
+            return True
+
+        # if string is longer than postion of last entity
+        if self.last_entity_end and self.last_entity_end < len(self.text):
+            return True
+
+        return False
 
 
-class NLPregexExpression:
+class Expression:
     """NLP expression parser."""
 
     def __init__(self, expression: str, entities: Optional[Dict]):
@@ -140,26 +151,31 @@ class NLPregexExpression:
                 result.update({name: found[0]})
         return result
 
-    def match(self, text: str) -> Optional[NlpExprMatch]:
+    def match(self, text: str) -> Optional[ExpressionMatch]:
         """Match and extract entities from `text`."""
         matched = self.regex.search(text)
 
         if matched:
-            nlp_expr_match = NlpExprMatch(entity_names=self.entity_names)
-            entities = matched.groups()
+            entities = DottedDict()
+            entity_values = matched.groups()
+            last_entity_end = None
 
-            if entities:
-                if len(entities) != len(self.entity_names):
+            if entity_values:
+                if len(entity_values) != len(self.entity_names):
                     raise NlpException("Matched unexpected number of entities")
 
-                name_to_entity = dict(zip(self.entity_names, entities))
-                nlp_expr_match.update_entities(name_to_entity)
-                nlp_expr_match.set_last_entity_end(
-                    matched.end(matched.lastindex)  # type: ignore
+                entities.update(dict(zip(self.entity_names, entity_values)))
+                last_entity_end = matched.end(
+                    matched.lastindex  # type: ignore
                 )
 
             if self.hard_entities:
-                nlp_expr_match.update_entities(self._find_hard_entities(text))
+                entities.update(self._find_hard_entities(text))
 
-            return nlp_expr_match
+            return ExpressionMatch(
+                text=text,
+                entity_names=self.entity_names,
+                entities=entities,
+                last_entity_end=last_entity_end,
+            )
         return None

@@ -1,0 +1,11 @@
+- name: weather
+  expressions:
+    - (what&&weather)
+  entities:
+    city:
+      - moscow
+      - london
+
+- name: current-time
+  expressions:
+    - (what&&time)

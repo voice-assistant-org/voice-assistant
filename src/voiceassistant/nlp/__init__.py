@@ -1,26 +1,58 @@
 """Natural language handler subpackage."""
 
+from __future__ import annotations
+
 from types import TracebackType
-from typing import TYPE_CHECKING, List, Type
+from typing import TYPE_CHECKING, List, Tuple, Type
 
 from voiceassistant.utils.datastruct import RecognitionString
 
-from .base import NlpResult
-from .regex import NLPregexProcessor
+from .base import BaseNLP, NlpResult
+from .regex import RegexNLP
 
 if TYPE_CHECKING:
     from voiceassistant.interfaces.base import InterfaceIO
+    from voiceassistant.core import VoiceAssistant
 
 
-_NLP_PROCESSORS = (NLPregexProcessor(),)
+class NaturalLanguageComponent:
+    def __init__(self, vass: VoiceAssistant) -> None:
+        self._vass = vass
+        self.regex = RegexNLP(vass)
+        self._processors = (self.regex,)
+
+    def continuous_handler(
+        self, interface: "InterfaceIO"
+    ) -> ContinuousLanguageHandler:
+        """Get continuos natural language handler.
+
+        Usecase: transcripts from continuos speech recognition.
+        """
+        return ContinuousLanguageHandler(
+            self._vass, interface, self._processors
+        )
+
+    def process(self, transcript: RecognitionString) -> None:
+        """Handle a single transcript.
+
+        Usecase: a message from chatbot interface.
+        """
+        raise NotImplementedError
 
 
-class NaturalLanguageHandler:
+class ContinuousLanguageHandler:
     """Class to take action based on natural language text."""
 
-    def __init__(self, interface: "InterfaceIO") -> None:
+    def __init__(
+        self,
+        vass: VoiceAssistant,
+        interface: "InterfaceIO",
+        nlp_processors: Tuple[BaseNLP, ...],
+    ) -> None:
         """Init."""
-        self.interface = interface
+        self._vass = vass
+        self._interface = interface
+        self._processors = nlp_processors
 
     def __enter__(self):  # type: ignore
         """Start natural language handler."""
@@ -37,19 +69,17 @@ class NaturalLanguageHandler:
         """Stop natural language processor."""
         pass
 
-    def handle_next_transcript(self, transcript: RecognitionString) -> None:
+    def handle_next(self, transcript: RecognitionString) -> None:
         """Handle a sequence of transcripts.
 
-        Usecase:
-            Transcripts from continuos speech recognition.
-            Each continuously recognized transcript is processed
-            while user is speaking. Skill will be executed in two cases:
-                1) transcript is complete (has enough information)
-                2) transcript is final (user stopped speaking)
+        Each continuously recognized transcript is processed
+        while user is speaking. Skill will be executed in two cases:
+            1) transcript is complete (has enough information)
+            2) transcript is final (user stopped speaking)
         """
         transcript = self._preprocess_transcript(transcript)
 
-        for nlp_processor in _NLP_PROCESSORS:
+        for nlp_processor in self._processors:
             nlp_result = nlp_processor.process(transcript)
 
             if not nlp_result:
@@ -60,14 +90,11 @@ class NaturalLanguageHandler:
 
             if nlp_result.is_complete or transcript.is_final:
                 self._make_record(transcript, nlp_result)
-                nlp_result.execute_skill(interface=self.interface)
-
-    def handle_single(self, transcript: str) -> None:
-        """Handle a single transcript.
-
-        Usecase: message from chatbot interface.
-        """
-        pass
+                self._vass.skills.run(
+                    name=nlp_result.intent,
+                    entities=nlp_result.entities,
+                    interface=self._interface,
+                )
 
     def _preprocess_transcript(
         self, text: RecognitionString
