@@ -1,16 +1,22 @@
 """API app factory."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from flask import Flask, Response, jsonify, request
 
 from voiceassistant.config import Config
-from voiceassistant.exceptions import ConfigValidationError
-from voiceassistant.nlp.regex import REGEX_SKILLS
+from voiceassistant.exceptions import ConfigValidationError, SkillError
 from voiceassistant.utils.datastruct import DottedDict
 
 from .auth import authorized
 
+if TYPE_CHECKING:
+    from voiceassistant.core import VoiceAssistant
 
-def api_factory(vass, app: Flask) -> Flask:  # type: ignore
+
+def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
     """Get REST API app."""
     name = "api"
 
@@ -24,7 +30,7 @@ def api_factory(vass, app: Flask) -> Flask:  # type: ignore
         """
         payload = request.get_json() or {}
         try:
-            vass.speech.output(payload["text"])
+            vass.interfaces.speech.output(payload["text"])
             return Response(status=200)
         except (KeyError, TypeError):
             return Response("Payload must have 'text' key", status=406)
@@ -33,8 +39,7 @@ def api_factory(vass, app: Flask) -> Flask:  # type: ignore
     @authorized
     def get_skills() -> Response:
         """Get an array of all available skill names."""
-        skillnames = list(REGEX_SKILLS.keys())
-        return jsonify(skillnames)
+        return jsonify(vass.skills.names)
 
     @app.route(f"/{name}/skills/<skill_name>", methods=["GET", "POST"])
     @authorized
@@ -46,12 +51,14 @@ def api_factory(vass, app: Flask) -> Flask:  # type: ignore
         """
         payload = request.get_json() or {}
         try:
-            entities = payload.get("entities", {})
-            skill_func = REGEX_SKILLS[skill_name].func
-            skill_func(entities=DottedDict(entities), interface=vass.speech)
+            vass.skills.run(
+                name=skill_name,
+                entities=DottedDict(payload.get("entities", {})),
+                interface=vass.interfaces.speech,
+            )
             return Response(status=200)
-        except KeyError:
-            return Response(f"No such skill: {skill_name}", status=501)
+        except SkillError as e:
+            return Response(str(e), status=501)
 
     @app.route(f"/{name}/config", methods=["GET"])
     @authorized
