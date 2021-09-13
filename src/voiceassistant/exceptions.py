@@ -9,6 +9,18 @@ class ConfigValidationError(AssistantBaseException):
     """Config Validation Error."""
 
 
+class SkillError(AssistantBaseException):
+    """Skill Error."""
+
+
+class ActionError(AssistantBaseException):
+    """Action Error."""
+
+
+class IntegrationError(AssistantBaseException):
+    """Integration Error."""
+
+
 class NlpException(AssistantBaseException):
     """Natural Language Processor Error."""
 
