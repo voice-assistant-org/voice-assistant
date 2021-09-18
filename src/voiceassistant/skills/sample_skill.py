@@ -6,7 +6,7 @@ from datetime import datetime
 from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.datastruct import DottedDict
 
-from .factory import skill
+from .create import skill
 
 
 @skill("weather")

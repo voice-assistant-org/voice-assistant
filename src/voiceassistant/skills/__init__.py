@@ -12,7 +12,7 @@ from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.datastruct import DottedDict
 
 from . import sample_skill
-from .factory import Action, Skill, skill
+from .create import Action, Skill, skill
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant

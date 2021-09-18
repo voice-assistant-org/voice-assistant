@@ -6,7 +6,7 @@ import abc
 from typing import TYPE_CHECKING, Dict, List
 
 from voiceassistant.addons.create import Addon
-from voiceassistant.skills.factory import Action, Skill
+from voiceassistant.skills.create import Action, Skill
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
