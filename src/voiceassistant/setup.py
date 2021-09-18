@@ -1,50 +1,13 @@
 """Voice assistant initial setup logic."""
 
-import errno
-import os
+import shutil
+from contextlib import suppress
 
-import yaml
-
-from voiceassistant.const import (
-    CONFIG_FILE_PATH,
-    DEFAULT_CONFIG_DIR,
-    GOOGLE_CREDENTIALS,
-)
+from voiceassistant.const import DATA_DIR, DEFAULT_CONFIG_DIR
 
 
 def pre_setup() -> None:
     """Do initial setup if needed."""
-    if not os.path.exists(DEFAULT_CONFIG_DIR):
-        try:
-            os.makedirs(DEFAULT_CONFIG_DIR)
-        except OSError as exc:
-            if exc.errno != errno.EEXIST:
-                raise
-
-    sample_config = {
-        "triggerword": {
-            "picovoice": {"word": "jarvis", "sensitivity": 0.5},
-            "sound": "now",
-        },
-        "prerecord_seconds": 3,
-        "tts": {
-            "aws": {
-                "access_key_id": "YOUR_KEY_ID",
-                "secret_access_key": "YOUR_SECRET_ACCESS_KEY",
-                "region_name": "eu-west-2",
-                "voice_id": "Brian",
-            },
-        },
-        "stt": {"google_cloud": {"language_code": "en-US"}},
-    }
-
-    files_and_contents = (
-        (GOOGLE_CREDENTIALS, ""),
-        (CONFIG_FILE_PATH, yaml.dump(sample_config)),
-    )
-
-    for filepath, content in files_and_contents:
-        if not os.path.exists(filepath):
-            print(f"Creating {filepath}")
-            with open(filepath, "w") as f:
-                f.write(content)
+    with suppress(FileExistsError):
+        shutil.copytree(f"{DATA_DIR}/sample_config/", DEFAULT_CONFIG_DIR)
+        print(f"Sample config files created at: {DEFAULT_CONFIG_DIR}")

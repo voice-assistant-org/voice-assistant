@@ -68,7 +68,7 @@ class RegexNLP(BaseNLP):
                 expressions=skill["nlp"]["expressions"],
                 entities=skill["nlp"].get("entities"),
             )
-            for skill in Config.get("skills", [])
+            for skill in Config.get("skills") or []
             if skill["nlp"]["name"] == self.name
         )
 

@@ -1,0 +1,19 @@
+triggerword:
+  picovoice:
+    word: jarvis
+    sensitivity: 0.55
+  sound: "bamboo"
+
+tts:
+  aws:
+    access_key_id: "YOUR_ACCES_KEY_ID"
+    region_name: eu-west-2
+    secret_access_key: "YOUR_SECRET_ACCESS_KEY"
+    voice_id: Brian
+
+stt:
+  google_cloud:
+    language_code: en-US
+
+
+skills:
