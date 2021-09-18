@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 _PACKAGE = "voiceassistant.integrations"
-_INTEGRATION_MODULES = ["hass"]
+_INTEGRATION_MODULES = ["hass", "respeaker"]
 
 
 class IntegrationsComponent:
