@@ -4,7 +4,6 @@ import struct
 
 import pvporcupine
 
-from voiceassistant import addons
 from voiceassistant.config import Config
 from voiceassistant.exceptions import ConfigValidationError
 from voiceassistant.interfaces.base import InterfaceIO
@@ -51,4 +50,3 @@ class KeywordDetector:
         """Wait till keyword was detected."""
         while self.not_detected(stream.read()):
             pass
-        addons.keyword.react_to_keyword(interface)

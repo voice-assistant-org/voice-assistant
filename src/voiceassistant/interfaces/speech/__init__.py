@@ -5,13 +5,16 @@ from __future__ import annotations
 import traceback
 from typing import TYPE_CHECKING
 
-from voiceassistant import addons
 from voiceassistant.config import Config
 from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.debug import print_and_flush
 
 from .keyword import KeywordDetector
-from .microphone_stream import MicrophoneStream
+from .microphone_stream import (
+    MicrophoneStream,
+    pause_microphone_stream,
+    resume_microphone_stream,
+)
 from .speech_to_text import SpeechToText
 from .text_to_speech import TextToSpeech
 
@@ -33,10 +36,11 @@ class SpeechInterface(InterfaceIO):
         """Recognize speech."""
         pass
 
-    @addons.call_at(start=addons.speech.tts_starts, end=addons.speech.tts_ends)
     def output(self, text: str, cache: bool = False) -> None:
         """Pronounce text."""
+        pause_microphone_stream()
         self.tts.say(text, cache)
+        resume_microphone_stream()
 
     def run(self) -> None:
         """Listen for keyword and process speech."""
@@ -50,10 +54,6 @@ class SpeechInterface(InterfaceIO):
                 self.keyword_detector.wait_untill_detected(stream, self)
                 self._process_speech(stream)
 
-    @addons.call_at(
-        start=addons.speech.processing_starts,
-        end=addons.speech.processing_ends,
-    )
     def _process_speech(self, stream: MicrophoneStream) -> None:
         """Handle speech from audio `stream`."""
         with self._vass.nlp.continuous_handler(interface=self) as handler:

@@ -3,6 +3,7 @@
 import threading
 from typing import Callable, List
 
+from voiceassistant.addons import AddonsComponent
 from voiceassistant.integrations import IntegrationsComponent
 from voiceassistant.interfaces import InterfacesComponent
 from voiceassistant.nlp import NaturalLanguageComponent
@@ -24,6 +25,7 @@ class VoiceAssistant:
         self.nlp = NaturalLanguageComponent(self)
         self.interfaces = InterfacesComponent(self)
         self.skills = SkillsComponent(self)
+        self.addons = AddonsComponent(self)
         self.integrations = IntegrationsComponent(self)
 
     def add_job(self, job: VassJob) -> None:
