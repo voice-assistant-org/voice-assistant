@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib
 import inspect
+import traceback
 from typing import TYPE_CHECKING, Any, Callable, List, Type
 
 from voiceassistant.config import Config
@@ -51,7 +52,7 @@ class IntegrationsComponent:
                     "Unexpected exception while importing "
                     f"integration '{module_name}': {e}"
                 )
-                raise
+                traceback.print_exc()
 
         for integration in integrations:
 
