@@ -5,6 +5,7 @@ from __future__ import annotations
 import abc
 from typing import TYPE_CHECKING, Dict, List
 
+from voiceassistant.addons.create import Addon
 from voiceassistant.skills.factory import Action, Skill
 
 if TYPE_CHECKING:
@@ -26,19 +27,21 @@ class Integration(abc.ABC):
         raise NotImplementedError
 
     @property
-    @abc.abstractmethod
     def actions(self) -> List[Action]:
         """Return list of actions implemented by integration."""
-        raise NotImplementedError
+        return []
 
     @property
-    @abc.abstractmethod
     def skills(self) -> List[Skill]:
         """Return list of skills implemented by integration."""
-        raise NotImplementedError
+        return []
 
     @property
-    @abc.abstractmethod
+    def addons(self) -> List[Addon]:
+        """Return list of regex intents implemented by integration."""
+        return []
+
+    @property
     def regex_intents(self) -> List[Dict]:
         """Return list of regex intents implemented by integration."""
-        raise NotImplementedError
+        return []

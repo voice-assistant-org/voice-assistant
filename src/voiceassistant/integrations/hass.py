@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
-import warnings
 from collections import namedtuple
-from typing import TYPE_CHECKING, Dict, Generator, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 from hassapi import Hass
+from hassapi.exceptions import ClientError, Unauthorised
+
 from voiceassistant.config import Config
+from voiceassistant.exceptions import IntegrationError
 from voiceassistant.integrations.base import Integration
 from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.skills.factory import Action, Skill, action, skill
@@ -16,8 +18,15 @@ from voiceassistant.utils.datastruct import DottedDict
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
 
-
-_hass = Hass(hassurl=Config.hass.url, token=Config.hass.token, timeout=20)
+try:
+    _hass = Hass(hassurl=Config.hass.url, token=Config.hass.token, timeout=20)
+except ClientError:
+    raise IntegrationError(
+        "Unable to connect to HASS API. "
+        "Make sure URL is correct and API Component is enabled."
+    )
+except Unauthorised:
+    raise IntegrationError("Invalid Home Assistant token")
 
 
 _NAME_TO_ENTITIY_IDS = {
@@ -69,7 +78,7 @@ class HomeAssistant(Integration):
         )
         result = []
         for intent in intents:
-            entity_names = tuple(_get_names_with_service(intent.service))
+            entity_names = _get_names_with_service(intent.service)
             entity_names_regex = "|".join(entity_names)
             result.append(
                 {
@@ -148,7 +157,7 @@ def close_cover(entities: DottedDict, interface: InterfaceIO) -> None:
     interface.output(f"closing {entities.hass_entity_name}")
 
 
-def _get_names_with_service(service: str) -> Generator[str, None, None]:
+def _get_names_with_service(service: str) -> List[str]:
     """Get names of entities from Config for which `service` is applicable.
 
     Args:
@@ -162,16 +171,15 @@ def _get_names_with_service(service: str) -> Generator[str, None, None]:
         for item in _hass.get_services()
         if service in item.services
     ]
+
+    result = []
     for ent in Config.hass.entities:
-        for entity_id in ent.ids:
-            domain = entity_id.split(".")[0]
-            if domain not in domains:
-                warnings.warn(
-                    f"Entity {entity_id} is not supported by"
-                    "Home Assistant, skipping"
-                )
-            for name in ent.names:
-                yield name
+        for ent_id in ent.ids:
+            domain = ent_id.split(".")[0]
+            if domain in domains:
+                result.extend(ent.names)
+
+    return result
 
 
 __all__ = ["HomeAssistant"]
