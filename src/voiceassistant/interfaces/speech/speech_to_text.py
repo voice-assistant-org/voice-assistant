@@ -64,9 +64,7 @@ class SpeechToText:
                 continue
 
             # best alternative
-            transcript = (
-                f"{initial_transcript} {result.alternatives[0].transcript}"
-            )
+            transcript = f"{initial_transcript} {result.alternatives[0].transcript}"
 
             if not result.is_final:
                 yield RecognitionString(transcript, is_final=False)

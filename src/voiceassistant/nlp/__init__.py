@@ -21,16 +21,12 @@ class NaturalLanguageComponent:
         self.regex = RegexNLP(vass)
         self._processors = (self.regex,)
 
-    def continuous_handler(
-        self, interface: "InterfaceIO"
-    ) -> ContinuousLanguageHandler:
+    def continuous_handler(self, interface: "InterfaceIO") -> ContinuousLanguageHandler:
         """Get continuos natural language handler.
 
         Usecase: transcripts from continuos speech recognition.
         """
-        return ContinuousLanguageHandler(
-            self._vass, interface, self._processors
-        )
+        return ContinuousLanguageHandler(self._vass, interface, self._processors)
 
     def process(self, transcript: RecognitionString) -> None:
         """Handle a single transcript.
@@ -44,10 +40,7 @@ class ContinuousLanguageHandler:
     """Class to take action based on natural language text."""
 
     def __init__(
-        self,
-        vass: VoiceAssistant,
-        interface: "InterfaceIO",
-        nlp_processors: Tuple[BaseNLP, ...],
+        self, vass: VoiceAssistant, interface: "InterfaceIO", nlp_processors: Tuple[BaseNLP, ...],
     ) -> None:
         """Init."""
         self._vass = vass
@@ -61,10 +54,7 @@ class ContinuousLanguageHandler:
         return self
 
     def __exit__(
-        self,
-        type: Type[BaseException],
-        value: BaseException,
-        traceback: TracebackType,
+        self, type: Type[BaseException], value: BaseException, traceback: TracebackType,
     ) -> None:
         """Stop natural language processor."""
         pass
@@ -96,9 +86,7 @@ class ContinuousLanguageHandler:
                     interface=self._interface,
                 )
 
-    def _preprocess_transcript(
-        self, text: RecognitionString
-    ) -> RecognitionString:
+    def _preprocess_transcript(self, text: RecognitionString) -> RecognitionString:
         """Remove part of transcript that was already processed."""
         # fmt: off
         return RecognitionString(
@@ -106,9 +94,7 @@ class ContinuousLanguageHandler:
         )
         # fmt: on
 
-    def _make_record(
-        self, transcript: RecognitionString, nlp_result: NlpResult
-    ) -> None:
+    def _make_record(self, transcript: RecognitionString, nlp_result: NlpResult) -> None:
         """Make record of a processed transcript."""
         self._processed_results.append(nlp_result)
         self._last_text_length = len(transcript)

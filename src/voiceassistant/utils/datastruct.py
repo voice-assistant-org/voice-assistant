@@ -17,9 +17,7 @@ class DottedDict(dict):
             if isinstance(attr, dict):
                 return DottedDict(attr)
             elif isinstance(attr, list):
-                return [
-                    DottedDict(i) if isinstance(i, dict) else i for i in attr
-                ]
+                return [DottedDict(i) if isinstance(i, dict) else i for i in attr]
             else:
                 return attr
         except KeyError as e:

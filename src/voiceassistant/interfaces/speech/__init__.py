@@ -10,11 +10,7 @@ from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.debug import print_and_flush
 
 from .keyword import KeywordDetector
-from .microphone_stream import (
-    MicrophoneStream,
-    pause_microphone_stream,
-    resume_microphone_stream,
-)
+from .microphone_stream import MicrophoneStream, pause_microphone_stream, resume_microphone_stream
 from .speech_to_text import SpeechToText
 from .text_to_speech import TextToSpeech
 

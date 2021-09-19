@@ -66,10 +66,7 @@ class SkillsComponent:
         def new_skill(entities: DottedDict, interface: InterfaceIO) -> None:
             for action_data in copy.deepcopy(actions):
                 self._actions[action_data.pop("name")].run(
-                    vass=self._vass,
-                    entities=entities,
-                    interface=interface,
-                    **action_data,
+                    vass=self._vass, entities=entities, interface=interface, **action_data,
                 )
 
         self.add(new_skill)
@@ -84,9 +81,7 @@ class SkillsComponent:
         self._actions[name] = action
         print(f"Action added: {name}")
 
-    def run(
-        self, name: str, entities: DottedDict, interface: InterfaceIO
-    ) -> None:
+    def run(self, name: str, entities: DottedDict, interface: InterfaceIO) -> None:
         """Execute skill by `name`."""
         try:
             self._skills[name].run(self._vass, entities, interface)

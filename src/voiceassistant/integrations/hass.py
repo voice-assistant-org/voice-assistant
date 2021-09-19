@@ -22,17 +22,14 @@ try:
     _hass = Hass(hassurl=Config.hass.url, token=Config.hass.token, timeout=20)
 except ClientError:
     raise IntegrationError(
-        "Unable to connect to HASS API. "
-        "Make sure URL is correct and API Component is enabled."
+        "Unable to connect to HASS API. " "Make sure URL is correct and API Component is enabled."
     )
 except Unauthorised:
     raise IntegrationError("Invalid Home Assistant token")
 
 
 _NAME_TO_ENTITIY_IDS = {
-    name: entity.ids
-    for entity in Config.hass.entities
-    for name in entity.names
+    name: entity.ids for entity in Config.hass.entities for name in entity.names
 }
 
 
@@ -83,9 +80,7 @@ class HomeAssistant(Integration):
             result.append(
                 {
                     "name": intent.name,
-                    "expressions": (
-                        f"({intent.regex}&&{entity_names_regex})",
-                    ),
+                    "expressions": (f"({intent.regex}&&{entity_names_regex})",),
                     "entities": {"hass_entity_name": entity_names},
                 }
             )
@@ -99,9 +94,7 @@ def say_from_template(interface: InterfaceIO, template: str) -> None:
 
 
 @action("call_service")
-def call_service(
-    service: str, entity_id: str, data: Optional[Dict] = None
-) -> None:
+def call_service(service: str, entity_id: str, data: Optional[Dict] = None) -> None:
     """Call HASS service."""
     data = data or {}
     _hass.call_service(service, entity_id, **data)
@@ -166,11 +159,7 @@ def _get_names_with_service(service: str) -> List[str]:
         entity friendly names for which `service` is applicable e.g.
             'turn_on' can be applicable for "bedroom lights"
     """
-    domains = [
-        item.domain
-        for item in _hass.get_services()
-        if service in item.services
-    ]
+    domains = [item.domain for item in _hass.get_services() if service in item.services]
 
     result = []
     for ent in Config.hass.entities:

@@ -33,9 +33,7 @@ class MicrophoneStream:
 
         # rolling window audio data buffer to store
         # the speech pronounced before the trigger word
-        self._buff = RollingWindowQueue(
-            size=int(rolling_window_sec * rate / chunk)
-        )
+        self._buff = RollingWindowQueue(size=int(rolling_window_sec * rate / chunk))
 
         audio_interface = pyaudio.PyAudio()
         self._audio_stream = audio_interface.open(
@@ -54,10 +52,7 @@ class MicrophoneStream:
         return self
 
     def __exit__(
-        self,
-        type: Type[BaseException],
-        value: BaseException,
-        traceback: TracebackType,
+        self, type: Type[BaseException], value: BaseException, traceback: TracebackType,
     ) -> None:
         """Stop audio stream."""
         self._audio_stream.stop_stream()
@@ -68,11 +63,7 @@ class MicrophoneStream:
         self._buff.put(None)
 
     def _fill_buffer(
-        self,
-        in_data: bytes,
-        frame_count: int,
-        time_info: Dict,
-        status_flags: int,
+        self, in_data: bytes, frame_count: int, time_info: Dict, status_flags: int,
     ) -> Tuple:
         """Continuously collect data from the audio stream into the buffer."""
         if not _PAUSED:

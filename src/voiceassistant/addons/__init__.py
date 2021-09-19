@@ -58,9 +58,7 @@ class AddonsComponent:
         path = core_attr.value
         for key in path:
             if not hasattr(temp, key):
-                raise AttributeError(
-                    f"'{temp}' doesn't have attribute '{key}', can't assign"
-                )
+                raise AttributeError(f"'{temp}' doesn't have attribute '{key}', can't assign")
             if key == path[-1]:
                 setattr(temp, key, value)
             else:

@@ -19,13 +19,10 @@ class KeywordDetector:
         keyword = Config.triggerword.picovoice.word
 
         if keyword not in pvporcupine.KEYWORDS:
-            raise ConfigValidationError(
-                f"available keywords are {pvporcupine.KEYWORDS}"
-            )
+            raise ConfigValidationError(f"available keywords are {pvporcupine.KEYWORDS}")
 
         self._detector = pvporcupine.create(
-            keywords=[keyword],
-            sensitivities=[Config.triggerword.picovoice.sensitivity],
+            keywords=[keyword], sensitivities=[Config.triggerword.picovoice.sensitivity],
         )
 
         self.rate = self._detector.sample_rate
@@ -44,9 +41,7 @@ class KeywordDetector:
         """Determine if keyword was not detected."""
         return self.process(audio_chunk) < 0
 
-    def wait_untill_detected(
-        self, stream: MicrophoneStream, interface: InterfaceIO
-    ) -> None:
+    def wait_untill_detected(self, stream: MicrophoneStream, interface: InterfaceIO) -> None:
         """Wait till keyword was detected."""
         while self.not_detected(stream.read()):
             pass

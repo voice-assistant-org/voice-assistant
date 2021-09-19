@@ -114,25 +114,18 @@ class Expression:
             return "".join(f"(?=.*(?:{part}))" for part in parts)
         return expression
 
-    def _preprocess_hard_entities(
-        self, entities: Optional[Dict]
-    ) -> Optional[Dict]:
+    def _preprocess_hard_entities(self, entities: Optional[Dict]) -> Optional[Dict]:
         """Convert keys of hardcoded `entities` dict into _FixedEntityName."""
         if entities:
             for value in entities.values():
                 if not isinstance(value, (tuple, list)):
-                    raise NlpException(
-                        "Entities must be specified as tuples or lists"
-                    )
+                    raise NlpException("Entities must be specified as tuples or lists")
             return {_FixedEntityName(k): v for k, v in entities.items()}
         return None
 
     def _get_entity_names(self, expression: str) -> Tuple[EntityNameType, ...]:
         """Extract entity names from NLP regex expression."""
-        return tuple(
-            self._parse_entity_name(name)
-            for name in _ENTITY_REGEX.findall(expression)
-        )
+        return tuple(self._parse_entity_name(name) for name in _ENTITY_REGEX.findall(expression))
 
     def _parse_entity_name(self, entity_name: str) -> EntityNameType:
         """Parse and derive a type of an entity name."""

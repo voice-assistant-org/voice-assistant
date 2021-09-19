@@ -2,12 +2,7 @@
 
 from typing import List
 
-from voiceassistant.addons.create import (
-    Addon,
-    CoreAttribute,
-    addon_begin,
-    addon_end,
-)
+from voiceassistant.addons.create import Addon, CoreAttribute, addon_begin, addon_end
 from voiceassistant.exceptions import IntegrationError
 
 from .base import Integration
@@ -36,9 +31,7 @@ try:
     ring_state = PixelRingState.off
 
 except Exception as e:
-    raise IntegrationError(
-        f"No ReSpeaker Microphone detected or not able to connect: {e}"
-    ) from e
+    raise IntegrationError(f"No ReSpeaker Microphone detected or not able to connect: {e}") from e
 
 
 class RespeakerMicrophoneArray(Integration):

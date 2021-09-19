@@ -22,16 +22,11 @@ class RegexIntent:
     """Store NLP regex intent related attributes."""
 
     def __init__(
-        self,
-        name: str,
-        expressions: Iterable[str],
-        entities: Optional[Dict[str, str]] = None,
+        self, name: str, expressions: Iterable[str], entities: Optional[Dict[str, str]] = None,
     ) -> None:
         """Create regex skill struct."""
         self.name = name
-        self.expressions = tuple(
-            Expression(expr, entities) for expr in expressions
-        )
+        self.expressions = tuple(Expression(expr, entities) for expr in expressions)
 
     def match(self, text: str) -> Optional[NlpResult]:
         """Match text to this intent."""
@@ -57,9 +52,7 @@ class RegexNLP(BaseNLP):
         self._vass = vass
         # build in intents
         with open(NLP_DATAFILE) as file:
-            self._intents.extend(
-                RegexIntent(**intent) for intent in yaml.safe_load(file)
-            )
+            self._intents.extend(RegexIntent(**intent) for intent in yaml.safe_load(file))
 
         # custom intents from config
         self._intents.extend(
@@ -81,10 +74,7 @@ class RegexNLP(BaseNLP):
         return None
 
     def add(
-        self,
-        name: str,
-        expressions: Iterable[str],
-        entities: Optional[Dict[str, str]] = None,
+        self, name: str, expressions: Iterable[str], entities: Optional[Dict[str, str]] = None,
     ) -> None:
         """Add regex intent."""
         self._intents.append(RegexIntent(name, expressions, entities))

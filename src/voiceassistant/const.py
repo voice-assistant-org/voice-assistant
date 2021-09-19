@@ -7,9 +7,7 @@ DATA_DIR = f"{os.path.dirname(os.path.realpath(__file__))}/data"
 
 # must be set in order to construct google.cloud.speech.SpeechClient
 if "GOOGLE_APPLICATION_CREDENTIALS" not in os.environ:
-    os.environ[
-        "GOOGLE_APPLICATION_CREDENTIALS"
-    ] = f"{DEFAULT_CONFIG_DIR}/google_credentials.json"
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f"{DEFAULT_CONFIG_DIR}/google_credentials.json"
 
 GOOGLE_CREDENTIALS = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
 

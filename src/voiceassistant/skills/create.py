@@ -29,12 +29,7 @@ class Routine:
 class Skill(Routine):
     """Skill class."""
 
-    def run(
-        self,
-        vass: VoiceAssistant,
-        entities: DottedDict,
-        interface: InterfaceIO,
-    ) -> None:
+    def run(self, vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO,) -> None:
         """Call skill function with arguments that it accepts."""
         possible_kwargs = {
             "vass": vass,
@@ -44,13 +39,9 @@ class Skill(Routine):
         try:
             kwargs = {arg: possible_kwargs[arg] for arg in self._args}
         except KeyError as e:
-            raise SkillError(
-                f"Skill function {self.name} has unrecognized argument: {e}"
-            )
+            raise SkillError(f"Skill function {self.name} has unrecognized argument: {e}")
 
-        to_print = "\n".join(
-            (f"name:     {self.name}", f"entities: {entities}")
-        )
+        to_print = "\n".join((f"name:     {self.name}", f"entities: {entities}"))
         print(f"\n\033[92m{to_print}\033[0m")
 
         self.func(**kwargs)
@@ -60,11 +51,7 @@ class Action(Routine):
     """Action class."""
 
     def run(
-        self,
-        vass: VoiceAssistant,
-        entities: DottedDict,
-        interface: InterfaceIO,
-        **kwargs: Any,
+        self, vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO, **kwargs: Any,
     ) -> None:
         """Call action function with arguments that it accepts."""
         possible_kwargs = {
@@ -73,11 +60,7 @@ class Action(Routine):
             "interface": interface,
             **kwargs,
         }
-        kwargs = {
-            arg: possible_kwargs[arg]
-            for arg in self._args
-            if arg in possible_kwargs
-        }
+        kwargs = {arg: possible_kwargs[arg] for arg in self._args if arg in possible_kwargs}
         try:
             self.func(**kwargs)
         except TypeError as e:

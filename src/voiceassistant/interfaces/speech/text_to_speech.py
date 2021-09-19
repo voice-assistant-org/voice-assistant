@@ -54,9 +54,7 @@ class TextToSpeech:
 
     def _play_mp3_file(self, filename: str) -> None:
         """Play mp3 file."""
-        os.system(
-            f"mpg123 {DEFAULT_CONFIG_DIR}/{filename}.mp3 >/dev/null 2>&1"
-        )
+        os.system(f"mpg123 {DEFAULT_CONFIG_DIR}/{filename}.mp3 >/dev/null 2>&1")
 
     def synthesize_to_mp3_file(self, text: str, filename: str) -> None:
         """Save synthesized `text` to mp3 file."""

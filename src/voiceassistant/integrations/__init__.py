@@ -39,19 +39,12 @@ class IntegrationsComponent:
             print(f"Importing integration: {module_name}")
             try:
                 module = importlib.import_module(f".{module_name}", _PACKAGE)
-                integration_classes = inspect.getmembers(
-                    module, _is_subclass_of(Integration),
-                )
-                integrations.extend(
-                    class_[1](self._vass) for class_ in integration_classes
-                )
+                integration_classes = inspect.getmembers(module, _is_subclass_of(Integration),)
+                integrations.extend(class_[1](self._vass) for class_ in integration_classes)
             except IntegrationError as e:
                 print(f"Unable to import integration '{module_name}': {e}")
             except Exception as e:
-                print(
-                    "Unexpected exception while importing "
-                    f"integration '{module_name}': {e}"
-                )
+                print("Unexpected exception while importing " f"integration '{module_name}': {e}")
                 traceback.print_exc()
 
         for integration in integrations:
@@ -59,9 +52,7 @@ class IntegrationsComponent:
             actions = integration.actions
             if actions:
                 for action in actions:
-                    self._vass.skills.add_action(
-                        action, domain=integration.name
-                    )
+                    self._vass.skills.add_action(action, domain=integration.name)
 
             skills = integration.skills
             if skills:
@@ -83,11 +74,7 @@ def _is_subclass_of(base_type: Type) -> Callable[[Any], bool]:
     """Get a function that determines if `obj` is subclass of `base_type`."""
 
     def is_subclass(obj: Any) -> bool:
-        return (
-            inspect.isclass(obj)
-            and issubclass(obj, base_type)
-            and obj is not base_type
-        )
+        return inspect.isclass(obj) and issubclass(obj, base_type) and obj is not base_type
 
     return is_subclass
 
