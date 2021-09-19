@@ -1,11 +1,16 @@
 """Add-On functions for speech interface."""
 
-from typing import List
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, List
 
 from voiceassistant.addons.create import Addon, CoreAttribute, addon_begin, addon_end
 from voiceassistant.exceptions import IntegrationError
 
 from .base import Integration
+
+if TYPE_CHECKING:
+    from voiceassistant.core import VoiceAssistant
 
 try:
     from pixel_ring import pixel_ring
@@ -39,6 +44,10 @@ class RespeakerMicrophoneArray(Integration):
 
     name = "respeaker"
 
+    def __init__(self, vass: VoiceAssistant) -> None:
+        """Init."""
+        pass
+
     @property
     def addons(self) -> List[Addon]:
         """Get addons."""
@@ -46,7 +55,7 @@ class RespeakerMicrophoneArray(Integration):
 
 
 @addon_begin(CoreAttribute.SPEECH_PROCESSING)
-def processing_starts() -> None:
+def processing_starts(vass: VoiceAssistant) -> None:
     """Do before NLP starts."""
     pixel_ring.speak()
     global ring_state
@@ -54,7 +63,7 @@ def processing_starts() -> None:
 
 
 @addon_end(CoreAttribute.SPEECH_PROCESSING)
-def processing_ends() -> None:
+def processing_ends(vass: VoiceAssistant) -> None:
     """Do when NLP ends."""
     pixel_ring.off()
     global ring_state
@@ -62,13 +71,13 @@ def processing_ends() -> None:
 
 
 @addon_begin(CoreAttribute.SPEECH_OUTPUT)
-def tts_starts() -> None:
+def tts_starts(vass: VoiceAssistant) -> None:
     """Do before voice output starts."""
     pixel_ring.think()
 
 
 @addon_end(CoreAttribute.SPEECH_OUTPUT)
-def tts_ends() -> None:
+def tts_ends(vass: VoiceAssistant) -> None:
     """Do when voice output ends."""
     if ring_state == PixelRingState.speak:
         pixel_ring.speak()
