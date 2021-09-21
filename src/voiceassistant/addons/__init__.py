@@ -28,7 +28,10 @@ class AddonsComponent:
     def __init__(self, vass: VoiceAssistant) -> None:
         """Init."""
         self._vass = vass
+        self.load()
 
+    def load(self) -> None:
+        """Load addons component."""
         for addon in _INTERNAL_ADDONS:
             self.add(addon)
 

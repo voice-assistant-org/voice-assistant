@@ -26,9 +26,9 @@ class IntegrationsComponent:
     def __init__(self, vass: VoiceAssistant) -> None:
         """Initialize and load integraions."""
         self._vass = vass
-        self.load_integrations()
+        self.load()
 
-    def load_integrations(self) -> None:
+    def load(self) -> None:
         """Load enabled integrations."""
         integrations: List[Integration] = []
 

@@ -46,8 +46,6 @@ class SkillsComponent:
 
     def load_config_skills(self) -> None:
         """Load skills specified in configuration.yaml."""
-        Config.reload()
-
         for skill_spec in Config.get("skills", []):
             self.add_from_config(skill_spec["name"], skill_spec["actions"])
 
