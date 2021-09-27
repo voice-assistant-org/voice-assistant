@@ -1,9 +1,12 @@
 """Voice Assistant core components."""
 
 import threading
-from typing import Callable, List
+from typing import Any, Callable, Dict, List
+
+import diskcache as dc
 
 from voiceassistant.addons import AddonsComponent
+from voiceassistant.const import CACHE_DIR
 from voiceassistant.integrations import IntegrationsComponent
 from voiceassistant.interfaces import InterfacesComponent
 from voiceassistant.nlp import NaturalLanguageComponent
@@ -16,12 +19,14 @@ class VoiceAssistant:
     """Voice Assistant root class."""
 
     _jobs: List[VassJob] = []
+    data: Dict[str, Any] = {}  # data dict for components to share
 
     def __init__(self) -> None:
         """Initialize Voice Assistant components.
 
         Order of initialization matters.
         """
+        self.cache = dc.Cache(CACHE_DIR)
         self.nlp = NaturalLanguageComponent(self)
         self.interfaces = InterfacesComponent(self)
         self.skills = SkillsComponent(self)

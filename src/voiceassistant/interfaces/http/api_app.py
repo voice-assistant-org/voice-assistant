@@ -80,4 +80,18 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
         except ConfigValidationError:
             return Response("Invalid config", status=406)
 
+    @app.route("/callback/<app>", methods=["GET"])
+    def callback(app: str) -> Response:
+        """Set callback request args to shared cache."""
+        app_data = {app: request.args.to_dict()}
+
+        if "callback" not in vass.data:
+            vass.data["callback"] = app_data
+        else:
+            vass.data["callback"].update(app_data)
+
+        return Response(
+            f"<b>{app.capitalize()} setup is successful, you can close this tab</b>", status=200
+        )
+
     return app

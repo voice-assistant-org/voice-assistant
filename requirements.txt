@@ -9,3 +9,4 @@ hassapi>=0.1.1
 pixel-ring==0.1.0
 flask >= 2.0.1, <3
 gpiozero >= 1.6.2, < 2
+diskcache >= 5.2.1, < 6

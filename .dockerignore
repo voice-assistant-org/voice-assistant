@@ -13,3 +13,4 @@ venv
 # Cache
 **/__pycache__
 .mypy_cache
+.vass_cache
