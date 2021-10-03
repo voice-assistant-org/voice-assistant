@@ -6,6 +6,7 @@ import traceback
 from typing import TYPE_CHECKING
 
 from voiceassistant.config import Config
+from voiceassistant.exceptions import UserCommunicateException
 from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.debug import print_and_flush
 
@@ -42,13 +43,17 @@ class SpeechInterface(InterfaceIO):
         """Listen for keyword and process speech."""
         while True:
             print("Creating microphone stream")
-            with MicrophoneStream(
-                rate=self.keyword_detector.rate,
-                chunk=self.keyword_detector.chunk_size,
-                rolling_window_sec=Config.get("prerecord_seconds", 3),
-            ) as stream:
-                self.keyword_detector.wait_untill_detected(stream, self)
-                self._process_speech(stream)
+            try:
+                with MicrophoneStream(
+                    rate=self.keyword_detector.rate,
+                    chunk=self.keyword_detector.chunk_size,
+                    rolling_window_sec=Config.get("prerecord_seconds", 3),
+                ) as stream:
+                    self.keyword_detector.wait_untill_detected(stream, self)
+                    self._process_speech(stream)
+            except Exception:
+                traceback.print_exc()
+                self.output("Error occured", cache=True)
 
     def _process_speech(self, stream: MicrophoneStream) -> None:
         """Handle speech from audio `stream`."""
@@ -57,9 +62,8 @@ class SpeechInterface(InterfaceIO):
                 for transcript in self.sst.recognize_from_stream(stream):
                     print_and_flush(transcript)
                     handler.handle_next(transcript=transcript)
-            except Exception:
-                traceback.print_exc()
-                self.output("Error occured", cache=True)
+            except UserCommunicateException as e:
+                self.output(str(e))
 
 
 __all__ = ["SpeechInterface"]

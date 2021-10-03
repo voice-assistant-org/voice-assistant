@@ -5,6 +5,10 @@ class AssistantBaseException(Exception):
     """Base assistant exception."""
 
 
+class UserCommunicateException(Exception):
+    """Error which message will be communicated to user."""
+
+
 class ConfigValidationError(AssistantBaseException):
     """Config Validation Error."""
 
@@ -27,6 +31,10 @@ class NlpException(AssistantBaseException):
 
 class SetupIncomplete(AssistantBaseException):
     """Setup Incomplete Exception."""
+
+
+class DeviceError(AssistantBaseException):
+    """Unknown Device Error."""
 
 
 class DottedAttribureError(AttributeError, AssistantBaseException):
