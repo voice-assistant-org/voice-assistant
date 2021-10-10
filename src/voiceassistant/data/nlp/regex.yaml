@@ -9,3 +9,81 @@
 - name: current-time
   expressions:
     - (what&&time)
+
+# music controls nlp
+- name: music-play-recommended
+  expressions:
+    - (play&&songs|tracks|music&&recommended)
+
+- name: music-play
+  expressions:
+    - (play|time&&music)
+
+- name: music-pause
+  expressions:
+    - stop
+    - pause
+
+- name: music-next
+  expressions:
+    - (next&&song|track)
+
+- name: music-previous
+  expressions:
+    - (previous&&song|track)
+
+- name: music-volume-up
+  expressions:
+    - (volume&&up|increase)
+    - (music|make&&louder)
+
+- name: music-volume-down
+  expressions:
+    - (volume&&down|decrease)
+    - (music|make&&quiter)
+
+- name: music-set-volume
+  expressions:
+    - set volume to <<level>>
+    - volume <<level>>
+
+- name: music-play-liked
+  expressions:
+    - (play&&songs|tracks&&liked|favorite)
+
+- name: music-play-similar
+  expressions:
+    - (play&&songs|tracks&&similar)
+
+- name: music-add-current-track
+  expressions:
+    - (like&&this|that&&song|track|tune)
+    - (great|dope|good|nice|awesome&&song|track|tune)
+
+- name: music-add-current-album
+  expressions:
+    - (like&&this|that&&album)
+
+- name: music-play-current-artist
+  expressions:
+    - (play&&this|current&&artist|singer)
+
+- name: music-play-track
+  expressions:
+    - play <<track>> track
+    - play <<track>> song
+
+- name: music-play-album
+  expressions:
+    - play <<album>> album
+    - play album <<album>>
+
+- name: music-play-artist
+  expressions:
+    - play <<artist>> artist
+    - play artist <<artist>>
+
+- name: music-play-playlist
+  expressions:
+    - play <<playlist>> playlist
+    - play playlist <<playlist>>
