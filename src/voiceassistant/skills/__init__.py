@@ -11,7 +11,7 @@ from voiceassistant.exceptions import SkillError
 from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.datastruct import DottedDict
 
-from . import sample_skill
+from . import actions, sample_skill
 from .create import Action, Skill, skill
 
 if TYPE_CHECKING:
@@ -21,6 +21,11 @@ if TYPE_CHECKING:
 _INTERNAL_SKILLS = [
     sample_skill.weather,
     sample_skill.current_time,
+]
+
+
+_INTERNAL_ACTIONS = [
+    actions.say,
 ]
 
 
@@ -36,6 +41,9 @@ class SkillsComponent:
 
         for skill_ in _INTERNAL_SKILLS:
             self.add(skill_)
+
+        for action in _INTERNAL_ACTIONS:
+            self.add_action(action)
 
         self.load_config_skills()
 
@@ -71,7 +79,7 @@ class SkillsComponent:
 
         self.add(new_skill)
 
-    def add_action(self, action: Action, domain: Optional[str]) -> None:
+    def add_action(self, action: Action, domain: Optional[str] = None) -> None:
         """Add action."""
         name = f"{domain}.{action.name}" if domain else action.name
 
