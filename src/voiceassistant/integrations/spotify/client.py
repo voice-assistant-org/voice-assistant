@@ -8,6 +8,7 @@ from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable, ContextManager, Dict, Iterable, List, Optional
 
 import tekore as tk
+
 from voiceassistant.config import Config
 from voiceassistant.exceptions import ActionError, SetupIncomplete, UserCommunicateException
 
