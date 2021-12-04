@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import random
 from collections import namedtuple
-from typing import TYPE_CHECKING, Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 from hassapi import Hass
 from hassapi.exceptions import ClientError, Unauthorised
@@ -88,9 +89,12 @@ class HomeAssistant(Integration):
 
 
 @action("say_from_template")
-def say_from_template(interface: InterfaceIO, template: str) -> None:
+def say_from_template(interface: InterfaceIO, template: Union[str, List[str]]) -> None:
     """Render HASS Jinja2 template and output result via `interface`."""
-    interface.output(_hass.render_template(template))
+    if isinstance(template, str):
+        interface.output(_hass.render_template(template))
+    elif isinstance(template, list):
+        interface.output(_hass.render_template(random.choice(template)))
 
 
 @action("call_service")
