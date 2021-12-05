@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import traceback
 from typing import TYPE_CHECKING
 
 from flask import Flask, Response, jsonify, request
@@ -93,5 +94,15 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
         return Response(
             f"<b>{app.capitalize()} setup is successful, you can close this tab</b>", status=200
         )
+
+    @app.route("/reload", methods=["GET"])
+    @authorized
+    def reload() -> Response:
+        try:
+            vass.load_components()
+            return Response(status=200)
+        except Exception:
+            traceback.print_exc()
+            return Response(status=500)
 
     return app
