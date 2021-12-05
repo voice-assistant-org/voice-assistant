@@ -11,7 +11,7 @@ from voiceassistant.exceptions import SkillError
 from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.datastruct import DottedDict
 
-from . import actions, sample_skill
+from . import actions, skills
 from .create import Action, Skill, skill
 
 if TYPE_CHECKING:
@@ -19,8 +19,9 @@ if TYPE_CHECKING:
 
 # skills defined in this subpackage
 _INTERNAL_SKILLS = [
-    sample_skill.weather,
-    sample_skill.current_time,
+    skills.weather,
+    skills.current_time,
+    skills.reload,
 ]
 
 

@@ -87,3 +87,7 @@
   expressions:
     - play <<playlist>> playlist
     - play playlist <<playlist>>
+
+- name: reload
+  expressions:
+    - (reload&&time|yourself)
