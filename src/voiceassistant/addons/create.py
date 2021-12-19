@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class CoreAttribute(Enum):
     """Store paths to attributes of core VoiceAssistant object."""
 
-    SPEECH_PROCESSING = ("interfaces", "speech", "_process_speech")
+    SPEECH_PROCESSING = ("interfaces", "speech", "process_speech")
     SPEECH_OUTPUT = ("interfaces", "speech", "output")
     KEYWORD_WAIT = (
         "interfaces",

@@ -50,12 +50,12 @@ class SpeechInterface(InterfaceIO):
                     rolling_window_sec=Config.get("prerecord_seconds", 3),
                 ) as stream:
                     self.keyword_detector.wait_untill_detected(stream, self)
-                    self._process_speech(stream)
+                    self.process_speech(stream)
             except Exception:
                 traceback.print_exc()
                 self.output("Error occured", cache=True)
 
-    def _process_speech(self, stream: MicrophoneStream) -> None:
+    def process_speech(self, stream: MicrophoneStream) -> None:
         """Handle speech from audio `stream`."""
         with self._vass.nlp.continuous_handler(interface=self) as handler:
             try:
