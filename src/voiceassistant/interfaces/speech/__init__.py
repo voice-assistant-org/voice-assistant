@@ -55,6 +55,19 @@ class SpeechInterface(InterfaceIO):
                 traceback.print_exc()
                 self.output("Error occured", cache=True)
 
+    def trigger(self) -> None:
+        """Trigger/start speech interface."""
+        with MicrophoneStream(
+            rate=self.keyword_detector.rate,
+            chunk=self.keyword_detector.chunk_size,
+            rolling_window_sec=Config.get("prerecord_seconds", 3),
+        ) as stream:
+            try:
+                self.process_speech(stream)
+            except Exception:
+                traceback.print_exc()
+                self.output("Error occured", cache=True)
+
     def process_speech(self, stream: MicrophoneStream) -> None:
         """Handle speech from audio `stream`."""
         with self._vass.nlp.continuous_handler(interface=self) as handler:

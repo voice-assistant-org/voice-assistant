@@ -105,4 +105,10 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
             traceback.print_exc()
             return Response(status=500)
 
+    @app.route("/trigger", methods=["GET"])
+    @authorized
+    def trigger() -> Response:
+        vass.interfaces.speech.trigger()
+        return Response(status=200)
+
     return app
