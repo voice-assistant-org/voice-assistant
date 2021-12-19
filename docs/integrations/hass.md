@@ -46,12 +46,12 @@ hass:
 
 ## Actions
 - `hass.say_from_template`</br>
-*template*:
+*template*
 
 - `hass.call_service`</br>
 *service*</br> 
 *entity_id*</br>
-***kwargs*
+*data*
 
 - `hass.fire_event`</br>
 *event_type*</br>
@@ -70,13 +70,15 @@ hass:
 skills:
   ...
   - name: good_morning
-    expressions:
+    nlp:
+      name: regex
+      expressions:
       - good morning
       - (wake&&time)
     actions:
-    - action: hass.run_script
+    - name: hass.run_script
       script_id: good_morning
-    - action: hass.say_from_template
+    - name: hass.say_from_template
       template: Good Morning. The temperature outside is {{ state_attr('weather.my_home','temperature') }} degrees.
 ```
 When user says *"good morning"* or  *"time to wake up"* Voice Assistant will execute two actions:
