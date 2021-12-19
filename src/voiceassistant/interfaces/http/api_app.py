@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import random
 import traceback
 from typing import TYPE_CHECKING
 
@@ -29,9 +30,14 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
         Sample payload:
         {"text": "Hello, World"}
         """
-        payload = request.get_json() or {}
         try:
-            vass.interfaces.speech.output(payload["text"])
+            text = (request.get_json() or {})["text"]
+
+            if isinstance(text, list):
+                vass.interfaces.speech.output(random.choice(text))
+            else:
+                vass.interfaces.speech.output(text)
+
             return Response(status=200)
         except (KeyError, TypeError):
             return Response("Payload must have 'text' key", status=406)
