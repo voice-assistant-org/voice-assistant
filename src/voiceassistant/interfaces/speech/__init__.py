@@ -42,14 +42,14 @@ class SpeechInterface(InterfaceIO):
     def run(self) -> None:
         """Listen for keyword and process speech."""
         while True:
-            print("Creating microphone stream")
             try:
+                print("*** CREATING NEW STREAM ***")
                 with MicrophoneStream(
                     rate=self.keyword_detector.rate,
                     chunk=self.keyword_detector.chunk_size,
                     rolling_window_sec=Config.get("prerecord_seconds", 3),
                 ) as stream:
-                    self.keyword_detector.wait_untill_detected(stream, self)
+                    self._wait_for_trigger(stream)
                     self.process_speech(stream)
             except Exception:
                 traceback.print_exc()
@@ -57,16 +57,7 @@ class SpeechInterface(InterfaceIO):
 
     def trigger(self) -> None:
         """Trigger/start speech interface."""
-        with MicrophoneStream(
-            rate=self.keyword_detector.rate,
-            chunk=self.keyword_detector.chunk_size,
-            rolling_window_sec=Config.get("prerecord_seconds", 3),
-        ) as stream:
-            try:
-                self.process_speech(stream)
-            except Exception:
-                traceback.print_exc()
-                self.output("Error occured", cache=True)
+        self._not_triggered = False
 
     def process_speech(self, stream: MicrophoneStream) -> None:
         """Handle speech from audio `stream`."""
@@ -77,6 +68,11 @@ class SpeechInterface(InterfaceIO):
                     handler.handle_next(transcript=transcript)
             except UserCommunicateException as e:
                 self.output(str(e))
+
+    def _wait_for_trigger(self, stream: MicrophoneStream) -> None:
+        self._not_triggered = True
+        while self._not_triggered and self.keyword_detector.not_detected(stream.read()):
+            pass
 
 
 __all__ = ["SpeechInterface"]

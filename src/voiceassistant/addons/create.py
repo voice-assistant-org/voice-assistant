@@ -18,8 +18,7 @@ class CoreAttribute(Enum):
     KEYWORD_WAIT = (
         "interfaces",
         "speech",
-        "keyword_detector",
-        "wait_untill_detected",
+        "_wait_for_trigger",
     )
 
 
