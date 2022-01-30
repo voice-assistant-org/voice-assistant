@@ -1,12 +1,11 @@
 """Microphone audio stream implementation."""
 
+import collections
 from types import TracebackType
-from typing import Dict, Generator, List, Tuple, Type
+from typing import Dict, Generator, Tuple, Type
 
 import pyaudio
 from six.moves import queue
-
-from voiceassistant.utils.datastruct import RollingWindowQueue
 
 _PAUSED = False
 
@@ -33,7 +32,10 @@ class MicrophoneStream:
 
         # rolling window audio data buffer to store
         # the speech pronounced before the trigger word
-        self._buff = RollingWindowQueue(size=int(rolling_window_sec * rate / chunk))
+        self._prerecord_buff: collections.deque = collections.deque(
+            maxlen=int(rolling_window_sec * rate / chunk)
+        )
+        self._buff: queue.Queue = queue.Queue()
 
         audio_interface = pyaudio.PyAudio()
         self._audio_stream = audio_interface.open(
@@ -44,7 +46,6 @@ class MicrophoneStream:
             frames_per_buffer=self._chunk,
             stream_callback=self._fill_buffer,
         )
-        self._last_chunks: List[bytes] = []
         self.closed = False
 
     def __enter__(self):  # type: ignore
@@ -58,9 +59,7 @@ class MicrophoneStream:
         self._audio_stream.stop_stream()
         self._audio_stream.close()
         self.closed = True
-        # Signal the generator to terminate so that the client's
-        # streaming_recognize method will not block the process termination.
-        self._buff.put(None)
+        self._buff.put(None)  # signal the generator to terminate
 
     def _fill_buffer(
         self, in_data: bytes, frame_count: int, time_info: Dict, status_flags: int,
@@ -68,28 +67,32 @@ class MicrophoneStream:
         """Continuously collect data from the audio stream into the buffer."""
         if not _PAUSED:
             self._buff.put(in_data)
-            self._last_chunks.append(in_data)
+            self._prerecord_buff.append(in_data)
         return None, pyaudio.paContinue
 
     def read(self) -> bytes:
-        """Get chunk of audio bytes."""
-        while not self._last_chunks:
-            pass
-        chunk = b"".join(self._last_chunks)
-        self._last_chunks = []
-        return chunk
+        """Get chunk of all buffered audio bytes."""
+        data = [self._buff.get(block=True)]
+
+        # Now consume whatever other data's still buffered
+        while True:
+            try:
+                data.append(self._buff.get(block=False))
+            except queue.Empty:
+                break
+
+        return b"".join(data)
 
     def generator(self) -> Generator[bytes, None, None]:
         """Continuously generate chunks of audio data."""
-        self._buff.disable_size_limit()
+        yield b"".join(self._prerecord_buff)  # pre-recorded audio chunk
+        self._prerecord_buff.clear()
 
         while not self.closed:
-            # Use a blocking get() to ensure there's at least one chunk of
-            #  data, and stop iteration if the chunk is None, indicating the
-            # end of the audio stream.
-            chunk = self._buff.get()
+            chunk = self._buff.get(block=True)
             if chunk is None:
                 return
+
             data = [chunk]
 
             # Now consume whatever other data's still buffered.

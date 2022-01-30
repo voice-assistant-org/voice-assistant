@@ -2,8 +2,6 @@
 
 from typing import Any
 
-from six.moves import queue
-
 from voiceassistant.exceptions import DottedAttribureError
 
 
@@ -29,33 +27,6 @@ class DottedDict(dict):
             self[key] = value
         except KeyError as e:
             raise DottedAttribureError(e)
-
-
-class RollingWindowQueue:
-    """Rolling window queue."""
-
-    def __init__(self, size: int):
-        """Init."""
-        self.size = size
-        self._current_size = 0
-        self._buffer: queue.Queue = queue.Queue()
-        self._size_limit_enabled = True
-
-    def disable_size_limit(self) -> None:
-        """Convert to unlimited size Queue."""
-        self._size_limit_enabled = False
-
-    def put(self, element: Any) -> None:
-        """Put element to the queue."""
-        self._buffer.put(element)
-        self._current_size += 1
-        if self._size_limit_enabled and self._current_size > self.size:
-            self._buffer.get()
-
-    def get(self, block: bool = True) -> Any:
-        """Get element from the queue."""
-        self._current_size -= 1
-        return self._buffer.get(block=block)
 
 
 class RecognitionString(str):
