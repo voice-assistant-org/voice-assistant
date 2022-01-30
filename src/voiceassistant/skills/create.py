@@ -6,6 +6,8 @@ import inspect
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Callable
 
+from tenacity import retry, retry_if_not_exception_type, stop_after_attempt, wait_exponential
+
 from voiceassistant.exceptions import ActionError, SkillError
 from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.datastruct import DottedDict
@@ -50,6 +52,12 @@ class Skill(Routine):
 class Action(Routine):
     """Action class."""
 
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=0.3, min=0.3, max=1),
+        retry=retry_if_not_exception_type(ActionError),
+        reraise=True,
+    )
     def run(
         self, vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO, **kwargs: Any,
     ) -> None:
