@@ -101,9 +101,10 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
             f"<b>{app.capitalize()} setup is successful, you can close this tab</b>", status=200
         )
 
-    @app.route("/reload", methods=["GET"])
+    @app.route(f"/{name}/reload", methods=["GET"])
     @authorized
     def reload() -> Response:
+        """Reload Voice Assistant components."""
         try:
             vass.load_components()
             return Response(status=200)
@@ -111,9 +112,10 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
             traceback.print_exc()
             return Response(status=500)
 
-    @app.route("/trigger", methods=["GET"])
+    @app.route(f"/{name}/trigger", methods=["GET"])
     @authorized
     def trigger() -> Response:
+        """Trigger Voice Assistant."""
         vass.interfaces.speech.trigger()
         return Response(status=200)
 
