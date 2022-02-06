@@ -9,6 +9,9 @@ from botocore.exceptions import ClientError, NoCredentialsError
 from voiceassistant.config import Config
 from voiceassistant.const import DEFAULT_CONFIG_DIR
 from voiceassistant.exceptions import SetupIncomplete
+from voiceassistant.utils.log import get_logger
+
+_LOGGER = get_logger(__name__)
 
 
 class TextToSpeech:
@@ -44,7 +47,7 @@ class TextToSpeech:
 
             if not os.path.isfile(f"{DEFAULT_CONFIG_DIR}/{filename}.mp3"):
                 self.synthesize_to_mp3_file(text, filename=filename)
-                print(f"TTS cached: {text}")
+                _LOGGER.info(f"Text-to-speech cached phrase: {text}")
 
             self._play_mp3_file(filename)
         else:

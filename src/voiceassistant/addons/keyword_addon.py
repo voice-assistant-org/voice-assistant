@@ -11,23 +11,26 @@ from typing import TYPE_CHECKING
 from voiceassistant.config import Config
 from voiceassistant.const import DATA_DIR, DEFAULT_CONFIG_DIR
 from voiceassistant.exceptions import ConfigValidationError
+from voiceassistant.utils.log import get_logger
 
 from .create import CoreAttribute, addon_end
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
 
+_LOGGER = get_logger(__name__)
+
 
 @addon_end(CoreAttribute.KEYWORD_WAIT, name="keyword_react")
 def _do_not_react(vass: VoiceAssistant) -> None:
     """Do nothing if reaction is not set in Config."""
-    print("Keyword detected")
+    _LOGGER.info("Keyword detected")
 
 
 @addon_end(CoreAttribute.KEYWORD_WAIT, name="keyword_react")
 def _react_by_random_phrase(vass: VoiceAssistant) -> None:
     """React to trigger word by a random reply phrase."""
-    print("Keyword detected")
+    _LOGGER.info("Keyword detected")
     vass.interfaces.speech.output(
         text=random.choice(Config.triggerword.replies), cache=True,
     )
@@ -36,7 +39,7 @@ def _react_by_random_phrase(vass: VoiceAssistant) -> None:
 @addon_end(CoreAttribute.KEYWORD_WAIT, name="keyword_react")
 def _react_by_sound(vass: VoiceAssistant) -> None:
     """React to trigger detection word."""
-    print("Keyword detected")
+    _LOGGER.info("Keyword detected")
     subprocess.Popen(
         ["mpg123", _get_soundfile_path(Config.triggerword.sound)],
         stdout=subprocess.DEVNULL,

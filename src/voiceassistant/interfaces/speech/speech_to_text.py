@@ -10,6 +10,9 @@ from voiceassistant.config import Config
 from voiceassistant.exceptions import SetupIncomplete
 from voiceassistant.interfaces.speech.microphone_stream import MicrophoneStream
 from voiceassistant.utils.datastruct import RecognitionString
+from voiceassistant.utils.log import get_logger
+
+_LOGGER = get_logger(__name__)
 
 
 class SpeechToText:
@@ -52,7 +55,7 @@ class SpeechToText:
         for response in responses:
             # timeout in case user is not talking
             if response == timedout_response:
-                print("*** STOPPING STT timeout***")
+                _LOGGER.info("Stopping speech recognition, user is not talking")
                 yield RecognitionString(transcript, is_final=True)
                 return
 
@@ -74,6 +77,6 @@ class SpeechToText:
                     initial_transcript = transcript
                     yield RecognitionString(transcript, is_final=False)
                 else:
-                    print("*** STOPPING STT ***")
+                    _LOGGER.info("Stopping speech recognition, google stopped processing")
                     yield RecognitionString(transcript, is_final=True)
                     return

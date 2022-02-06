@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import traceback
 from typing import TYPE_CHECKING
 
 from voiceassistant.config import Config
 from voiceassistant.exceptions import UserCommunicateException
 from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.debug import print_and_flush
+from voiceassistant.utils.log import get_logger
 
 from .keyword import KeywordDetector
 from .microphone_stream import MicrophoneStream, pause_microphone_stream, resume_microphone_stream
@@ -17,6 +17,8 @@ from .text_to_speech import TextToSpeech
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
+
+_LOGGER = get_logger(__name__)
 
 
 class SpeechInterface(InterfaceIO):
@@ -42,7 +44,7 @@ class SpeechInterface(InterfaceIO):
     def run(self) -> None:
         """Listen for keyword and process speech."""
         while True:
-            print("*** CREATING NEW STREAM ***")
+            _LOGGER.info("Creating new microphone stream")
             with MicrophoneStream(
                 rate=self.keyword_detector.rate,
                 chunk=self.keyword_detector.chunk_size,
@@ -65,7 +67,7 @@ class SpeechInterface(InterfaceIO):
             except UserCommunicateException as e:
                 self.output(str(e))
             except Exception:
-                traceback.print_exc()
+                _LOGGER.exception("Unexpected exception raised while processing speech")
                 self.output("Error occured", cache=True)
 
     def _wait_for_trigger(self, stream: MicrophoneStream) -> None:

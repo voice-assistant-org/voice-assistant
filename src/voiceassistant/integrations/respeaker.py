@@ -6,18 +6,21 @@ from typing import TYPE_CHECKING, List
 
 from voiceassistant.addons.create import Addon, CoreAttribute, addon_begin, addon_end
 from voiceassistant.exceptions import IntegrationError
+from voiceassistant.utils.log import get_logger
 
 from .base import Integration
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
 
+_LOGGER = get_logger(__name__)
+
 try:
     from pixel_ring import pixel_ring
     from pixel_ring import apa102_pixel_ring
 
     if isinstance(pixel_ring, apa102_pixel_ring.PixelRing):
-        print("Found ReSpeaker 4 Mic Array")
+        _LOGGER.info("Found ReSpeaker 4 Mic Array")
 
         from gpiozero import LED
 

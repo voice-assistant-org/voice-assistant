@@ -2,6 +2,9 @@
 
 from voiceassistant.exceptions import SetupIncomplete
 from voiceassistant.setup import pre_setup
+from voiceassistant.utils.log import get_logger
+
+_LOGGER = get_logger(__name__)
 
 
 def main() -> None:
@@ -14,7 +17,7 @@ def main() -> None:
         vass = VoiceAssistant()
         vass.run()
     except SetupIncomplete as e:
-        print(f"Voice Assistant setup is incomplete:\n{e}")
+        _LOGGER.error(f"Voice Assistant setup is incomplete:\n{e}")
 
 
 if __name__ == "__main__":

@@ -11,6 +11,8 @@ from __future__ import annotations
 from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable
 
+from voiceassistant.utils.log import get_logger
+
 from . import keyword_addon
 from .create import Addon, CoreAttribute
 
@@ -21,6 +23,8 @@ if TYPE_CHECKING:
 _INTERNAL_ADDONS = [
     keyword_addon.react_to_keyword,
 ]
+
+_LOGGER = get_logger(__name__)
 
 
 class AddonsComponent:
@@ -39,10 +43,10 @@ class AddonsComponent:
 
         # duplicate addon check
         if hasattr(method, "_addons") and addon.name in method._addons:
-            print(f"Skipping addon: {addon.name}")
+            _LOGGER.info(f"Addon skipped: {addon.name}")
             return
 
-        print(f"Adding addon: {addon.name}")
+        _LOGGER.info(f"Addon added: {addon.name}")
         wrapped_method = _wrap(
             to_wrap=method,
             with_func=addon.func,  # type: ignore

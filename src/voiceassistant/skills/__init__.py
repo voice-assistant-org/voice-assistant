@@ -3,19 +3,21 @@
 from __future__ import annotations
 
 import copy
-import warnings
 from typing import TYPE_CHECKING, Dict, List, Optional
 
 from voiceassistant.config import Config
 from voiceassistant.exceptions import SkillError
 from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.datastruct import DottedDict
+from voiceassistant.utils.log import get_logger
 
 from . import actions, skills
 from .create import Action, Skill, skill
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
+
+_LOGGER = get_logger(__name__)
 
 # skills defined in this subpackage
 _INTERNAL_SKILLS = [
@@ -63,10 +65,10 @@ class SkillsComponent:
     def add(self, skill: Skill) -> None:
         """Add skill."""
         if skill.name in self._skills:
-            warnings.warn(f"Overwriting skill {skill.name}")
+            _LOGGER.warning(f"Overwriting skill {skill.name}")
 
         self._skills[skill.name] = skill
-        print(f"Skill added: {skill.name}")
+        _LOGGER.info(f"Skill added: {skill.name}")
 
     def add_from_config(self, name_: str, actions: List[DottedDict]) -> None:
         """Make skill function from `actions` specified in config."""
@@ -85,10 +87,10 @@ class SkillsComponent:
         name = f"{domain}.{action.name}" if domain else action.name
 
         if name in self._actions:
-            warnings.warn(f"Overwriting action {name}")
+            _LOGGER.warning(f"Overwriting action {name}")
 
         self._actions[name] = action
-        print(f"Action added: {name}")
+        _LOGGER.info(f"Action added: {name}")
 
     def run(self, name: str, entities: DottedDict, interface: InterfaceIO) -> None:
         """Execute skill by `name`."""

@@ -9,6 +9,9 @@ import flask
 from flask import request
 
 from voiceassistant.const import DEFAULT_CONFIG_DIR
+from voiceassistant.utils.log import get_logger
+
+_LOGGER = get_logger(__name__)
 
 
 def _get_token() -> str:
@@ -46,7 +49,7 @@ def authorized(func: Callable) -> Callable:
         if TOKEN == request.headers.get("token"):
             return func(*args, **kwargs)
         else:
-            print("Unauthorized")
+            _LOGGER.warning(f"Unauthorized API request in {func.__name__}")
             return flask.Response("<b>401: Unauthorized</b>", status=401)
 
     return wrapper

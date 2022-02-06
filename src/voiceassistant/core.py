@@ -8,8 +8,11 @@ import diskcache as dc
 from voiceassistant.const import CACHE_DIR
 from voiceassistant.exceptions import AssistantBaseException
 from voiceassistant.interfaces import InterfacesComponent
+from voiceassistant.utils.log import get_logger
 
 VassJob = Callable[[], None]
+
+_LOGGER = get_logger(__name__)
 
 
 class VoiceAssistant:
@@ -37,7 +40,7 @@ class VoiceAssistant:
 
         Order of initialization matters.
         """
-        print("*** Loading Components ***")
+        _LOGGER.info("Loading components")
 
         from voiceassistant.addons import AddonsComponent
         from voiceassistant.integrations import IntegrationsComponent

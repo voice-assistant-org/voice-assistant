@@ -11,9 +11,12 @@ from tenacity import retry, retry_if_not_exception_type, stop_after_attempt, wai
 from voiceassistant.exceptions import ActionError, SkillError
 from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.datastruct import DottedDict
+from voiceassistant.utils.log import get_logger
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
+
+_LOGGER = get_logger(__name__)
 
 
 @dataclass
@@ -44,7 +47,7 @@ class Skill(Routine):
             raise SkillError(f"Skill function {self.name} has unrecognized argument: {e}")
 
         to_print = "\n".join((f"name:     {self.name}", f"entities: {entities}"))
-        print(f"\n\033[92m{to_print}\033[0m")
+        _LOGGER.info(f"\n\033[92m{to_print}\033[0m")
 
         self.func(**kwargs)
 
