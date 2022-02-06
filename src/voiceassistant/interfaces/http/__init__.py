@@ -2,17 +2,26 @@
 
 from __future__ import annotations
 
+import sys
 from typing import TYPE_CHECKING, Callable
 
 from flask import Flask
 
 from voiceassistant.const import PORT
+from voiceassistant.utils.log import get_logger
 
 from .api_app import api_factory
 from .helpers import get_my_ip
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
+
+
+_LOGGER = get_logger(__name__)
+
+# disable flask message
+cli = sys.modules["flask.cli"]
+cli.show_server_banner = lambda *x: None  # type: ignore
 
 
 class HttpInterface:
@@ -37,4 +46,8 @@ class HttpInterface:
 
     def run(self) -> None:
         """Run app."""
-        self.app.run(self._host, port=PORT)
+        _LOGGER.info(f"Starting webserver at: {self.url}")
+        try:
+            self.app.run(self._host, port=PORT)
+        except OSError as e:
+            _LOGGER.error(f"Failed to start webserver. {e}")
