@@ -44,14 +44,18 @@ class SpeechInterface(InterfaceIO):
     def run(self) -> None:
         """Listen for keyword and process speech."""
         while True:
-            _LOGGER.info("Creating new microphone stream")
-            with MicrophoneStream(
-                rate=self.keyword_detector.rate,
-                chunk=self.keyword_detector.chunk_size,
-                rolling_window_sec=Config.get("prerecord_seconds", 3),
-            ) as stream:
-                self._wait_for_trigger(stream)
-                self.process_speech(stream)
+            try:
+                _LOGGER.info("Creating new microphone stream")
+                with MicrophoneStream(
+                    rate=self.keyword_detector.rate,
+                    chunk=self.keyword_detector.chunk_size,
+                    rolling_window_sec=Config.get("prerecord_seconds", 3),
+                ) as stream:
+                    self._wait_for_trigger(stream)
+                    self.process_speech(stream)
+            except Exception:
+                _LOGGER.exception("Unexpected exception raised in speech interface loop")
+                raise
 
     def trigger(self) -> None:
         """Trigger/start speech interface."""
@@ -59,16 +63,16 @@ class SpeechInterface(InterfaceIO):
 
     def process_speech(self, stream: MicrophoneStream) -> None:
         """Handle speech from audio `stream`."""
-        with self._vass.nlp.continuous_handler(interface=self) as handler:
-            try:
+        try:
+            with self._vass.nlp.continuous_handler(interface=self) as handler:
                 for transcript in self.sst.recognize_from_stream(stream):
                     print_and_flush(transcript)
                     handler.handle_next(transcript=transcript)
-            except UserCommunicateException as e:
-                self.output(str(e))
-            except Exception:
-                _LOGGER.exception("Unexpected exception raised while processing speech")
-                self.output("Error occured", cache=True)
+        except UserCommunicateException as e:
+            self.output(str(e))
+        except Exception:
+            _LOGGER.exception("Unexpected exception raised while processing speech")
+            self.output("Error occured", cache=True)
 
     def _wait_for_trigger(self, stream: MicrophoneStream) -> None:
         self._not_triggered = True
