@@ -8,6 +8,7 @@ Add-ons:
 
 from __future__ import annotations
 
+from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable
 
 from . import keyword_addon
@@ -34,15 +35,27 @@ class AddonsComponent:
 
     def add(self, addon: Addon) -> None:
         """Enable addon by wrapping one of methods in core object."""
-        print(f"Adding addon: {addon.name}")
-
         method = self._get_core_attr(addon.core_attr)
+
+        # duplicate addon check
+        if hasattr(method, "_addons") and addon.name in method._addons:
+            print(f"Skipping addon: {addon.name}")
+            return
+
+        print(f"Adding addon: {addon.name}")
         wrapped_method = _wrap(
             to_wrap=method,
             with_func=addon.func,  # type: ignore
             at_start=addon.at_start,
             vass=self._vass,
         )
+
+        # set metadata for addon duplicate check
+        if hasattr(wrapped_method, "_addons"):
+            wrapped_method._addons.add(addon.name)  # type: ignore
+        else:
+            wrapped_method._addons = {addon.name}  # type: ignore
+
         self._set_core_attr(addon.core_attr, wrapped_method)
 
     def _get_core_attr(self, core_attr: CoreAttribute) -> Any:
@@ -74,18 +87,20 @@ def _wrap(
     """Wrap `to_wrap` function with another function `with_func`."""
     if at_start:
 
-        def wrapped(*args: Any, **kwargs: Any) -> Any:
+        @wraps(to_wrap)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             with_func(vass)
-            to_wrap(*args, **kwargs)
+            return to_wrap(*args, **kwargs)
 
     else:
 
-        def wrapped(*args: Any, **kwargs: Any) -> Any:
+        @wraps(to_wrap)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             result = to_wrap(*args, **kwargs)
             with_func(vass)
             return result
 
-    return wrapped
+    return wrapper
 
 
 __all__ = ["AddonsComponent"]
