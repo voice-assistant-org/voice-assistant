@@ -47,7 +47,7 @@ class Skill(Routine):
             raise SkillError(f"Skill function {self.name} has unrecognized argument: {e}")
 
         to_print = "\n".join((f"name:     {self.name}", f"entities: {entities}"))
-        _LOGGER.info(f"\n\033[92m{to_print}\033[0m")
+        _LOGGER.info(f"Intent recognized\n\033[92m{to_print}\033[0m")
 
         self.func(**kwargs)
 
