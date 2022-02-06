@@ -18,13 +18,13 @@ if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
 
 
-@addon_end(CoreAttribute.KEYWORD_WAIT)
+@addon_end(CoreAttribute.KEYWORD_WAIT, name="keyword_react")
 def _do_not_react(vass: VoiceAssistant) -> None:
     """Do nothing if reaction is not set in Config."""
     print("Keyword detected")
 
 
-@addon_end(CoreAttribute.KEYWORD_WAIT)
+@addon_end(CoreAttribute.KEYWORD_WAIT, name="keyword_react")
 def _react_by_random_phrase(vass: VoiceAssistant) -> None:
     """React to trigger word by a random reply phrase."""
     print("Keyword detected")
@@ -33,7 +33,7 @@ def _react_by_random_phrase(vass: VoiceAssistant) -> None:
     )
 
 
-@addon_end(CoreAttribute.KEYWORD_WAIT)
+@addon_end(CoreAttribute.KEYWORD_WAIT, name="keyword_react")
 def _react_by_sound(vass: VoiceAssistant) -> None:
     """React to trigger detection word."""
     print("Keyword detected")
