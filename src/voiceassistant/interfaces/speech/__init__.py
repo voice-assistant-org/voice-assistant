@@ -54,7 +54,7 @@ class SpeechInterface(InterfaceIO):
                     self._wait_for_trigger(stream)
                     self.process_speech(stream)
             except Exception:
-                _LOGGER.exception("Unexpected exception raised in speech interface loop")
+                _LOGGER.critical("Unexpected exception raised in speech interface loop")
                 raise
 
     def trigger(self) -> None:
