@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from voiceassistant import addons
 from voiceassistant.config import Config
 from voiceassistant.exceptions import UserCommunicateException
 from voiceassistant.interfaces.base import InterfaceIO
@@ -35,6 +36,7 @@ class SpeechInterface(InterfaceIO):
         """Recognize speech."""
         pass
 
+    @addons.expose(addons.CoreAttribute.SPEECH_OUTPUT)
     def output(self, text: str, cache: bool = False) -> None:
         """Pronounce text."""
         pause_microphone_stream()
@@ -61,6 +63,7 @@ class SpeechInterface(InterfaceIO):
         """Trigger/start speech interface."""
         self._not_triggered = False
 
+    @addons.expose(addons.CoreAttribute.SPEECH_PROCESSING)
     def process_speech(self, stream: MicrophoneStream) -> None:
         """Handle speech from audio `stream`."""
         try:
@@ -74,6 +77,7 @@ class SpeechInterface(InterfaceIO):
             _LOGGER.exception("Unexpected exception raised while processing speech")
             self.output("Error occured", cache=True)
 
+    @addons.expose(addons.CoreAttribute.KEYWORD_WAIT)
     def _wait_for_trigger(self, stream: MicrophoneStream) -> None:
         self._not_triggered = True
         while self._not_triggered and self.keyword_detector.not_detected(stream.read()):
