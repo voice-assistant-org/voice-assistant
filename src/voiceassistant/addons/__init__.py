@@ -9,7 +9,7 @@ Add-ons:
 from __future__ import annotations
 
 from functools import wraps
-from typing import TYPE_CHECKING, Any, Callable, Dict
+from typing import TYPE_CHECKING, Any, Callable, Dict, List
 
 from voiceassistant.utils.log import get_logger
 
@@ -27,8 +27,10 @@ _INTERNAL_ADDONS = [
 _LOGGER = get_logger(__name__)
 
 
-_ADDONS_START: Dict[CoreAttribute:Callable] = {}
-_ADDONS_END: Dict[CoreAttribute:Callable] = {}
+AddonStorageType = Dict[CoreAttribute, List[Addon]]
+
+_ADDONS_START: AddonStorageType = {}
+_ADDONS_END: AddonStorageType = {}
 
 
 class AddonsComponent:
@@ -56,12 +58,12 @@ class AddonsComponent:
         _LOGGER.info(f"Addon added: {addon.name}")
 
 
-def expose(attr: CoreAttribute):
+def expose(attr: CoreAttribute) -> Callable:
     """Expose one of voice assistant methods for addons."""
 
-    def wrapper(func: Callable):
+    def wrapper(func: Callable) -> Callable:
         @wraps(func)
-        def inner(self, *args, **kwargs):
+        def inner(self, *args: Any, **kwargs: Any) -> Any:  # type: ignore  # TODO
             for addon in _ADDONS_START.get(attr, []):
                 addon.func(self._vass)
 

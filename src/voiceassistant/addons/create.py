@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from enum import Enum, auto
 from typing import TYPE_CHECKING, Callable, Optional
 
@@ -33,6 +32,7 @@ class Addon:
         at_start: bool,
         name: str,
     ):
+        """Initiate addon."""
         self._func = func
         self.core_attr = core_attr
         self.at_start = at_start

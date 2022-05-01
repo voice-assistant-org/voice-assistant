@@ -75,7 +75,7 @@ class SkillsComponent:
 
     def _make_from_config(
         self, name: str, actions: List[DottedDict], variables: Optional[DottedDict]
-    ) -> None:
+    ) -> Skill:
         """Make skill function from `actions` specified in config."""
 
         @skill(name)
@@ -85,7 +85,7 @@ class SkillsComponent:
 
                 action.run(vass=self._vass, entities=entities, interface=interface, **action_data)
 
-        return new_skill
+        return new_skill  # type: ignore
 
     def add_action(self, action: Action, domain: Optional[str] = None) -> None:
         """Add action."""
