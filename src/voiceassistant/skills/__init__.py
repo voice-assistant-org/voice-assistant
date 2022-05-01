@@ -57,10 +57,13 @@ class SkillsComponent:
 
     def load_config_skills(self) -> None:
         """Load skills specified in configuration.yaml."""
-        Config.reload()
-
         for skill_spec in Config.get("skills", []):
-            self.add_from_config(skill_spec["name"], skill_spec["actions"])
+            skill = self._make_from_config(
+                name=skill_spec["name"],
+                actions=skill_spec["actions"],
+                variables=skill_spec.get("variables")
+            )
+            self.add(skill)
 
     def add(self, skill: Skill) -> None:
         """Add skill."""
@@ -70,17 +73,20 @@ class SkillsComponent:
         self._skills[skill.name] = skill
         _LOGGER.info(f"Skill added: {skill.name}")
 
-    def add_from_config(self, name_: str, actions: List[DottedDict]) -> None:
+    def _make_from_config(self, name: str, actions: List[DottedDict], variables: Optional[DottedDict]) -> None:
         """Make skill function from `actions` specified in config."""
 
-        @skill(name_)
+        @skill(name)
         def new_skill(entities: DottedDict, interface: InterfaceIO) -> None:
             for action_data in copy.deepcopy(actions):
-                self._actions[action_data.pop("name")].run(
+                action = self._actions[action_data.pop("name")]
+
+                action.run(
                     vass=self._vass, entities=entities, interface=interface, **action_data,
                 )
 
-        self.add(new_skill)
+        return new_skill
+
 
     def add_action(self, action: Action, domain: Optional[str] = None) -> None:
         """Add action."""
