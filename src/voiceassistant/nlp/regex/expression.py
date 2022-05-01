@@ -158,9 +158,7 @@ class Expression:
                     raise NlpException("Matched unexpected number of entities")
 
                 entities.update(dict(zip(self.entity_names, entity_values)))
-                last_entity_end = matched.end(
-                    matched.lastindex  # type: ignore
-                )
+                last_entity_end = matched.end(matched.lastindex)  # type: ignore
 
             if self.hard_entities:
                 entities.update(self._find_hard_entities(text))

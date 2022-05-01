@@ -17,10 +17,10 @@ if TYPE_CHECKING:
 
 class CoreAttribute(Enum):
     """Represent core attributes names."""
+
     SPEECH_PROCESSING = auto()
     SPEECH_OUTPUT = auto()
     KEYWORD_WAIT = auto()
-
 
 
 class Addon:

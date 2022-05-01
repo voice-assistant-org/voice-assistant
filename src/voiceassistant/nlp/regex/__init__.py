@@ -22,7 +22,7 @@ class RegexIntent:
     """Store NLP regex intent related attributes."""
 
     def __init__(
-        self, name: str, expressions: Iterable[str], entities: Optional[Dict[str, str]] = None,
+        self, name: str, expressions: Iterable[str], entities: Optional[Dict[str, str]] = None
     ) -> None:
         """Create regex skill struct."""
         self.name = name
@@ -74,7 +74,7 @@ class RegexNLP(BaseNLP):
         return None
 
     def add(
-        self, name: str, expressions: Iterable[str], entities: Optional[Dict[str, str]] = None,
+        self, name: str, expressions: Iterable[str], entities: Optional[Dict[str, str]] = None
     ) -> None:
         """Add regex intent."""
         self._intents.append(RegexIntent(name, expressions, entities))

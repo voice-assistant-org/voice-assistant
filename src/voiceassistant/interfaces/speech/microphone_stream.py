@@ -53,7 +53,7 @@ class MicrophoneStream:
         return self
 
     def __exit__(
-        self, type: Type[BaseException], value: BaseException, traceback: TracebackType,
+        self, type: Type[BaseException], value: BaseException, traceback: TracebackType
     ) -> None:
         """Stop audio stream."""
         self._audio_stream.stop_stream()
@@ -62,7 +62,11 @@ class MicrophoneStream:
         self._buff.put(None)  # signal the generator to terminate
 
     def _fill_buffer(
-        self, in_data: bytes, frame_count: int, time_info: Dict, status_flags: int,
+        self,
+        in_data: bytes,
+        frame_count: int,
+        time_info: Dict,
+        status_flags: int,
     ) -> Tuple:
         """Continuously collect data from the audio stream into the buffer."""
         if not _PAUSED:

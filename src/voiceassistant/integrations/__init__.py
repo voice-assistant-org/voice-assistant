@@ -40,7 +40,7 @@ class IntegrationsComponent:
             _LOGGER.info(f"Importing integration: {module_name}")
             try:
                 module = importlib.import_module(f".{module_name}", _PACKAGE)
-                integration_classes = inspect.getmembers(module, _is_subclass_of(Integration),)
+                integration_classes = inspect.getmembers(module, _is_subclass_of(Integration))
                 integrations.extend(class_[1](self._vass) for class_ in integration_classes)
             except IntegrationError as e:
                 _LOGGER.error(f"Unable to import integration '{module_name}': {e}")

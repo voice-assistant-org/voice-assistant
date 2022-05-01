@@ -15,8 +15,8 @@ from .const import NAME, VOLUME_INCREMENT, VOLUME_MUFFLE_FACTOR
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
-    from voiceassistant.utils.datastruct import DottedDict
     from voiceassistant.interfaces.base import InterfaceIO
+    from voiceassistant.utils.datastruct import DottedDict
 
 _MUFFLE_FACTOR = Config.spotify.get("volume_muffle_factor") or VOLUME_MUFFLE_FACTOR
 _VOLUME_INCREMENT = Config.spotify.get("volume_increment") or VOLUME_INCREMENT

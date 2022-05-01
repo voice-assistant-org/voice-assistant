@@ -19,7 +19,7 @@ class KeywordDetector:
             raise ConfigValidationError(f"available keywords are {pvporcupine.KEYWORDS}")
 
         self._detector = pvporcupine.create(
-            keywords=[keyword], sensitivities=[Config.triggerword.picovoice.sensitivity],
+            keywords=[keyword], sensitivities=[Config.triggerword.picovoice.sensitivity]
         )
 
         self.rate = self._detector.sample_rate

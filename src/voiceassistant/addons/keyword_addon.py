@@ -31,9 +31,7 @@ def _do_not_react(vass: VoiceAssistant) -> None:
 def _react_by_random_phrase(vass: VoiceAssistant) -> None:
     """React to trigger word by a random reply phrase."""
     _LOGGER.info("Keyword detected")
-    vass.interfaces.speech.output(
-        text=random.choice(Config.triggerword.replies), cache=True,
-    )
+    vass.interfaces.speech.output(text=random.choice(Config.triggerword.replies), cache=True)
 
 
 @addon_end(CoreAttribute.KEYWORD_WAIT, name="keyword_react")

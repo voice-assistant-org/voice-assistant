@@ -16,8 +16,7 @@ if TYPE_CHECKING:
 _LOGGER = get_logger(__name__)
 
 try:
-    from pixel_ring import pixel_ring
-    from pixel_ring import apa102_pixel_ring
+    from pixel_ring import apa102_pixel_ring, pixel_ring
 
     if isinstance(pixel_ring, apa102_pixel_ring.PixelRing):
         _LOGGER.info("Found ReSpeaker 4 Mic Array")

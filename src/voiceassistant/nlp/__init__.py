@@ -11,8 +11,8 @@ from .base import BaseNLP, NlpResult
 from .regex import RegexNLP
 
 if TYPE_CHECKING:
-    from voiceassistant.interfaces.base import InterfaceIO
     from voiceassistant.core import VoiceAssistant
+    from voiceassistant.interfaces.base import InterfaceIO
 
 
 class NaturalLanguageComponent:
@@ -40,7 +40,7 @@ class ContinuousLanguageHandler:
     """Class to take action based on natural language text."""
 
     def __init__(
-        self, vass: VoiceAssistant, interface: "InterfaceIO", nlp_processors: Tuple[BaseNLP, ...],
+        self, vass: VoiceAssistant, interface: "InterfaceIO", nlp_processors: Tuple[BaseNLP, ...]
     ) -> None:
         """Init."""
         self._vass = vass
@@ -54,7 +54,7 @@ class ContinuousLanguageHandler:
         return self
 
     def __exit__(
-        self, type: Type[BaseException], value: BaseException, traceback: TracebackType,
+        self, type: Type[BaseException], value: BaseException, traceback: TracebackType
     ) -> None:
         """Stop natural language processor."""
         pass

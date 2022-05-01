@@ -34,7 +34,7 @@ class Routine:
 class Skill(Routine):
     """Skill class."""
 
-    def run(self, vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO,) -> None:
+    def run(self, vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO) -> None:
         """Call skill function with arguments that it accepts."""
         possible_kwargs = {
             "vass": vass,
@@ -62,7 +62,7 @@ class Action(Routine):
         reraise=True,
     )
     def run(
-        self, vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO, **kwargs: Any,
+        self, vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO, **kwargs: Any
     ) -> None:
         """Call action function with arguments that it accepts."""
         possible_kwargs = {
