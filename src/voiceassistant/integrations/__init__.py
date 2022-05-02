@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 _LOGGER = get_logger(__name__)
 
 _PACKAGE = "voiceassistant.integrations"
-_INTEGRATION_MODULES = ["hass", "spotify", "respeaker"]
+_INTEGRATION_MODULES = ["respeaker", "hass", "spotify"]
 
 
 class IntegrationsComponent:
