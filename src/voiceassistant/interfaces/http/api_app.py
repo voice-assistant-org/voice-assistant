@@ -79,18 +79,18 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
         """Get an array of all available skill names."""
         return jsonify(vass.skills.names)
 
-    @app.route(f"/{name}/skills/<skill_name>", methods=["GET", "POST"])
+    @app.route(f"/{name}/skills", methods=["POST"])
     @authorized
-    def execute_skill(skill_name: str) -> Response:
+    def execute_skill() -> Response:
         """Execure specified skill.
 
-        Sample payload (Optional):
-        {"entities": {"location": "Moscow"}}
+        Sample payload:
+        {"name": "party", "entities": {"location": "Amsterdam"}}
         """
         payload = request.get_json() or {}
         try:
             vass.skills.run(
-                name=skill_name,
+                name=payload["name"],
                 entities=DottedDict(payload.get("entities", {})),
                 interface=vass.interfaces.speech,
             )
@@ -173,7 +173,7 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
             }
         )
 
-    @app.route(f"/{name}/state", methods=["POST"])
+    @app.route(f"/{name}/states", methods=["POST"])
     @authorized
     def set_state() -> Response:
         """Set a state of voice assistant."""
