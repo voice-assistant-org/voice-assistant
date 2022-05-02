@@ -26,6 +26,16 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
     name = "api"
 
     #
+    # Status
+    #
+
+    @app.route(f"/{name}/status", methods=["GET"])
+    @authorized
+    def get_status() -> Response:
+        """Return Voice Assistant status."""
+        return Response("active", status=200)
+
+    #
     # Actions
     #
 
