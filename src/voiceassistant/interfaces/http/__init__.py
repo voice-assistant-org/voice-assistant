@@ -9,9 +9,9 @@ from flask import Flask
 
 from voiceassistant.const import PORT
 from voiceassistant.utils.log import get_logger
+from voiceassistant.utils.network import get_my_ip
 
 from .api_app import api_factory
-from .helpers import get_my_ip
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant

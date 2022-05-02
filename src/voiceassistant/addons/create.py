@@ -20,6 +20,8 @@ class CoreAttribute(Enum):
     SPEECH_PROCESSING = auto()
     SPEECH_OUTPUT = auto()
     KEYWORD_WAIT = auto()
+    MICROPHONE_ON = auto()
+    MICROPHONE_OFF = auto()
 
 
 class Addon:
