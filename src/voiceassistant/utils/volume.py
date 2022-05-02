@@ -1,5 +1,8 @@
+"""Host device volume control utils."""
+
+
 from types import TracebackType
-from typing import Type
+from typing import Any, Type
 
 import alsaaudio
 
@@ -7,7 +10,7 @@ import alsaaudio
 class _Mixer:
     """Mixer with context handling."""
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Init."""
         self._alsamixer = alsaaudio.Mixer(*args, **kwargs)
 
@@ -31,7 +34,7 @@ def set_volume(level: int) -> None:
 def get_volume() -> int:
     """Get master volume."""
     with _Mixer() as mixer:
-        return mixer.getvolume()[0]
+        return mixer.getvolume()[0]  # type: ignore
 
 
 def set_mute(mute: bool) -> None:
