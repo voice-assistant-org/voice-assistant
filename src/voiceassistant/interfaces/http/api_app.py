@@ -158,29 +158,45 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
         return jsonify(info)
 
     #
-    # Volume controls
+    # States
     #
 
-    @app.route(f"/{name}/volume", methods=["GET"])
+    @app.route(f"/{name}/states", methods=["GET"])
     @authorized
-    def get_volume() -> Response:
-        """Get host device volume."""
-        return jsonify({"level": volume.get_volume(), "muted": volume.is_muted()})
+    def get_states() -> Response:
+        """Get states of voice assistant."""
+        return jsonify(
+            {
+                "microphone_on": vass.interfaces.speech.microphone_is_on,
+                "volume_level": volume.get_volume(),
+                "volume_muted": volume.is_muted(),
+            }
+        )
 
-    @app.route(f"/{name}/volume", methods=["POST"])
+    @app.route(f"/{name}/state", methods=["POST"])
     @authorized
-    def set_volume() -> Response:
-        """Set host device volume."""
-        payload = request.get_json() or {}
-        volume.set_volume(payload["level"])
-        return Response(status=200)
+    def set_state() -> Response:
+        """Set a state of voice assistant."""
+        payload = request.get_json()
 
-    @app.route(f"/{name}/mute", methods=["POST"])
-    @authorized
-    def set_mute() -> Response:
-        """Set host device mute state."""
-        payload = request.get_json() or {}
-        volume.set_mute(payload["mute"])
+        if not payload:
+            return Response("Payload is empty", status=400)
+
+        volume_level = payload.get("volume_level")
+        if isinstance(volume_level, int):
+            volume.set_volume(volume_level)
+
+        volume_muted = payload.get("volume_muted")
+        if isinstance(volume_muted, bool):
+            volume.set_mute(volume_muted)
+
+        microphone_on = payload.get("microphone_on")
+        if isinstance(microphone_on, bool):
+            if microphone_on:
+                vass.interfaces.speech.turn_on_microphone()
+            else:
+                vass.interfaces.speech.turn_off_microphone()
+
         return Response(status=200)
 
     return app
