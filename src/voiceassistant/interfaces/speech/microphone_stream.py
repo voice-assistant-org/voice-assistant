@@ -22,6 +22,12 @@ def resume_microphone_stream() -> None:
     _PAUSED = False
 
 
+def microphone_is_paused() -> bool:
+    """Return True if microphone stream is active."""
+    global _PAUSED
+    return _PAUSED
+
+
 class MicrophoneStream:
     """Opens a recording stream as a generator yielding the audio chunks."""
 

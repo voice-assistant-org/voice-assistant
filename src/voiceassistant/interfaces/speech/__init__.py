@@ -12,7 +12,12 @@ from voiceassistant.utils.debug import print_and_flush
 from voiceassistant.utils.log import get_logger
 
 from .keyword import KeywordDetector
-from .microphone_stream import MicrophoneStream, pause_microphone_stream, resume_microphone_stream
+from .microphone_stream import (
+    MicrophoneStream,
+    microphone_is_paused,
+    pause_microphone_stream,
+    resume_microphone_stream,
+)
 from .speech_to_text import SpeechToText
 from .text_to_speech import TextToSpeech
 
@@ -82,6 +87,21 @@ class SpeechInterface(InterfaceIO):
         self._not_triggered = True
         while self._not_triggered and self.keyword_detector.not_detected(stream.read()):
             pass
+
+    @property
+    def microphone_is_on(self) -> bool:
+        """Return True if microphone stream is active."""
+        return not microphone_is_paused()
+
+    @addons.expose(addons.CoreAttribute.MICROPHONE_ON)
+    def turn_on_microphone(self) -> None:
+        """Turn on microphone stream."""
+        resume_microphone_stream()
+
+    @addons.expose(addons.CoreAttribute.MICROPHONE_OFF)
+    def turn_off_microphone(self) -> None:
+        """Turn off microphone stream."""
+        pause_microphone_stream()
 
 
 __all__ = ["SpeechInterface"]
