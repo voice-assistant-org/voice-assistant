@@ -40,6 +40,10 @@ class AddonsComponent:
         """Init."""
         self._vass = vass
 
+        global _ADDONS_START, _ADDONS_END
+        _ADDONS_START = {}
+        _ADDONS_END = {}
+
         for addon in _INTERNAL_ADDONS:
             self.add(addon)
 

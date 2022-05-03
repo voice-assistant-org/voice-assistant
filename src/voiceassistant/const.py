@@ -17,4 +17,4 @@ CONFIG_FILE_PATH = os.environ.get(
     "VOICE_ASSISTANT_CONFIGURATION", f"{DEFAULT_CONFIG_DIR}/configuration.yaml"
 )
 
-PORT = 5050
+PORT = 1507

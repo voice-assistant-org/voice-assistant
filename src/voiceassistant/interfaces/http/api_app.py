@@ -26,6 +26,16 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
     name = "api"
 
     #
+    # Status
+    #
+
+    @app.route(f"/{name}/status", methods=["GET"])
+    @authorized
+    def get_status() -> Response:
+        """Return Voice Assistant status."""
+        return Response("active", status=200)
+
+    #
     # Actions
     #
 
@@ -79,18 +89,18 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
         """Get an array of all available skill names."""
         return jsonify(vass.skills.names)
 
-    @app.route(f"/{name}/skills/<skill_name>", methods=["GET", "POST"])
+    @app.route(f"/{name}/skills", methods=["POST"])
     @authorized
-    def execute_skill(skill_name: str) -> Response:
+    def execute_skill() -> Response:
         """Execure specified skill.
 
-        Sample payload (Optional):
-        {"entities": {"location": "Moscow"}}
+        Sample payload:
+        {"name": "party", "entities": {"location": "Amsterdam"}}
         """
         payload = request.get_json() or {}
         try:
             vass.skills.run(
-                name=skill_name,
+                name=payload["name"],
                 entities=DottedDict(payload.get("entities", {})),
                 interface=vass.interfaces.speech,
             )
@@ -167,13 +177,13 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
         """Get states of voice assistant."""
         return jsonify(
             {
-                "microphone_on": vass.interfaces.speech.microphone_is_on,
-                "volume_level": volume.get_volume(),
-                "volume_muted": volume.is_muted(),
+                "input_muted": vass.interfaces.speech.microphone_is_muted,
+                "output_muted": volume.is_muted(),
+                "output_volume": volume.get_volume(),
             }
         )
 
-    @app.route(f"/{name}/state", methods=["POST"])
+    @app.route(f"/{name}/states", methods=["POST"])
     @authorized
     def set_state() -> Response:
         """Set a state of voice assistant."""
@@ -182,20 +192,20 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
         if not payload:
             return Response("Payload is empty", status=400)
 
-        volume_level = payload.get("volume_level")
+        volume_level = payload.get("output_volume")
         if isinstance(volume_level, int):
             volume.set_volume(volume_level)
 
-        volume_muted = payload.get("volume_muted")
+        volume_muted = payload.get("output_muted")
         if isinstance(volume_muted, bool):
             volume.set_mute(volume_muted)
 
-        microphone_on = payload.get("microphone_on")
-        if isinstance(microphone_on, bool):
-            if microphone_on:
-                vass.interfaces.speech.turn_on_microphone()
-            else:
+        microphone_off = payload.get("input_muted")
+        if isinstance(microphone_off, bool):
+            if microphone_off:
                 vass.interfaces.speech.turn_off_microphone()
+            else:
+                vass.interfaces.speech.turn_on_microphone()
 
         return Response(status=200)
 

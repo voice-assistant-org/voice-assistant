@@ -89,9 +89,9 @@ class SpeechInterface(InterfaceIO):
             pass
 
     @property
-    def microphone_is_on(self) -> bool:
+    def microphone_is_muted(self) -> bool:
         """Return True if microphone stream is active."""
-        return not microphone_is_paused()
+        return microphone_is_paused()
 
     @addons.expose(addons.CoreAttribute.MICROPHONE_ON)
     def turn_on_microphone(self) -> None:
