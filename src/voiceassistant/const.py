@@ -2,7 +2,7 @@
 
 import os
 
-USER_PATH = os.path.expanduser('~')
+USER_PATH = os.path.expanduser("~")
 PROJECT_PATH = os.path.dirname(os.path.realpath(__file__))
 
 DEFAULT_CONFIG_DIR = f"{USER_PATH}/.config/voiceassistant"

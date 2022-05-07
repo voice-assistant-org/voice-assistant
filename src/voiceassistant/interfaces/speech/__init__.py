@@ -36,6 +36,7 @@ class SpeechInterface(InterfaceIO):
         self.keyword_detector = KeywordDetector()
         self.sst = SpeechToText(self.keyword_detector.rate)
         self.tts = TextToSpeech()
+        self._mic_should_be_on = True
 
     def input(self) -> str:
         """Recognize speech."""
@@ -46,7 +47,8 @@ class SpeechInterface(InterfaceIO):
         """Pronounce text."""
         pause_microphone_stream()
         self.tts.say(text, cache)
-        resume_microphone_stream()
+        if self._mic_should_be_on:
+            resume_microphone_stream()
 
     def run(self) -> None:
         """Listen for keyword and process speech."""
@@ -66,7 +68,8 @@ class SpeechInterface(InterfaceIO):
 
     def trigger(self) -> None:
         """Trigger/start speech interface."""
-        self._not_triggered = False
+        if not self.microphone_is_muted:
+            self._not_triggered = False
 
     @addons.expose(addons.CoreAttribute.SPEECH_PROCESSING)
     def process_speech(self, stream: MicrophoneStream) -> None:
@@ -96,11 +99,13 @@ class SpeechInterface(InterfaceIO):
     @addons.expose(addons.CoreAttribute.MICROPHONE_ON)
     def turn_on_microphone(self) -> None:
         """Turn on microphone stream."""
+        self._mic_should_be_on = True
         resume_microphone_stream()
 
     @addons.expose(addons.CoreAttribute.MICROPHONE_OFF)
     def turn_off_microphone(self) -> None:
         """Turn off microphone stream."""
+        self._mic_should_be_on = False
         pause_microphone_stream()
 
 
