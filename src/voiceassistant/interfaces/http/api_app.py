@@ -87,7 +87,7 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
     @authorized
     def get_skills() -> Response:
         """Get an array of all available skill names."""
-        return jsonify(vass.skills.names)
+        return jsonify(vass.skills.names)  # type: ignore
 
     @app.route(f"/{name}/skills", methods=["POST"])
     @authorized
@@ -116,7 +116,7 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
     @authorized
     def get_config() -> Response:
         """Get Voice Assistant config."""
-        return jsonify(Config)
+        return jsonify(Config)  # type: ignore
 
     @app.route(f"/{name}/config", methods=["POST"])
     @authorized
@@ -165,7 +165,7 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
             "language": Config.general.get("language", "en"),
             "area": Config.general.get("area", "undefined"),
         }
-        return jsonify(info)
+        return jsonify(info)  # type: ignore
 
     #
     # States
@@ -175,7 +175,7 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
     @authorized
     def get_states() -> Response:
         """Get states of voice assistant."""
-        return jsonify(
+        return jsonify(  # type: ignore
             {
                 "input_muted": vass.interfaces.speech.microphone_is_muted,
                 "output_muted": volume.is_muted(),
