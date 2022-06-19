@@ -100,9 +100,11 @@ class SkillsComponent:
     def run(self, name: str, entities: DottedDict, interface: InterfaceIO) -> None:
         """Execute skill by `name`."""
         try:
-            self._skills[name].run(self._vass, entities, interface)
+            skill = self._skills[name] 
         except KeyError as e:
             raise SkillError(f"Skill {e} does not exist")
+
+        skill.run(self._vass, entities, interface)
 
 
 __all__ = ["SkillsComponent"]
