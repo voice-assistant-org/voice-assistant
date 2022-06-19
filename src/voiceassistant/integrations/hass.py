@@ -69,9 +69,9 @@ class HomeAssistant(Integration):
         """Return list of hass-regex-intents."""
         Intent = namedtuple("Intent", "name, service, regex")
         intents = (
-            Intent("hass-turn-on", "turn_on", "on|enable|start"),
-            Intent("hass-turn-off", "turn_off", "off|disable"),
-            Intent("hass-open-cover", "open_cover", "up|open"),
+            Intent("hass-turn-on", "turn_on", " on|enable|start"),
+            Intent("hass-turn-off", "turn_off", " off|disable"),
+            Intent("hass-open-cover", "open_cover", " up|open"),
             Intent("hass-close-cover", "close_cover", "down|close"),
         )
         result = []
