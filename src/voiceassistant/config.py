@@ -4,11 +4,10 @@ from typing import Dict
 
 import yaml
 
-from voiceassistant.const import CONFIG_FILE_PATH
 from voiceassistant.utils.datastruct import DottedDict
 
 
-class _Config(DottedDict):
+class Config(DottedDict):
     """Voice Assistant config parser."""
 
     def __init__(self, filepath: str) -> None:
@@ -36,6 +35,3 @@ class _Config(DottedDict):
     def _validate(self, config: Dict) -> Dict:
         """Validate config."""
         return config
-
-
-Config = _Config(CONFIG_FILE_PATH)

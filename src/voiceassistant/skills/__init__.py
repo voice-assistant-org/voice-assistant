@@ -5,31 +5,17 @@ from __future__ import annotations
 import copy
 from typing import TYPE_CHECKING, Dict, List, Optional
 
-from voiceassistant.config import Config
 from voiceassistant.exceptions import SkillError
 from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.datastruct import DottedDict
 from voiceassistant.utils.log import get_logger
 
-from . import actions, skills
 from .create import Action, Skill, skill
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
 
 _LOGGER = get_logger(__name__)
-
-# skills defined in this subpackage
-_INTERNAL_SKILLS = [
-    skills.weather,
-    skills.current_time,
-    skills.reload,
-]
-
-
-_INTERNAL_ACTIONS = [
-    actions.say,
-]
 
 
 class SkillsComponent:
@@ -42,12 +28,6 @@ class SkillsComponent:
         self._actions: Dict[str, Action] = {}
         self._skills: Dict[str, Skill] = {}
 
-        for skill_ in _INTERNAL_SKILLS:
-            self.add(skill_)
-
-        for action in _INTERNAL_ACTIONS:
-            self.add_action(action)
-
         self.load_config_skills()
 
     @property
@@ -57,7 +37,7 @@ class SkillsComponent:
 
     def load_config_skills(self) -> None:
         """Load skills specified in configuration.yaml."""
-        for skill_spec in Config.get("skills", []):
+        for skill_spec in self._vass.config.get("skills", []):
             skill = self._make_from_config(
                 name=skill_spec["name"],
                 actions=skill_spec["actions"],
@@ -100,7 +80,7 @@ class SkillsComponent:
     def run(self, name: str, entities: DottedDict, interface: InterfaceIO) -> None:
         """Execute skill by `name`."""
         try:
-            skill = self._skills[name] 
+            skill = self._skills[name]
         except KeyError as e:
             raise SkillError(f"Skill {e} does not exist")
 

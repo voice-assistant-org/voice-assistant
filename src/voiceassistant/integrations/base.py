@@ -10,13 +10,14 @@ from voiceassistant.skills.create import Action, Skill
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
+    from voiceassistant.config import Config
 
 
 class Integration(abc.ABC):
     """Base integration class that sets required properties."""
 
     @abc.abstractmethod
-    def __init__(self, vass: VoiceAssistant) -> None:
+    def __init__(self, vass: VoiceAssistant, config: Config) -> None:
         """Init."""
         raise NotImplementedError
 

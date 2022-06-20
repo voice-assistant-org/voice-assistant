@@ -1,6 +1,6 @@
 """Host constants for Spotify integration."""
 
-NAME = "spotify"
+DOMAIN = "spotify"
 
 KEY_REFRESH_TOKEN = "spotify_refresh_token"
 
@@ -9,8 +9,8 @@ TYPE_ALBUM = "album"
 TYPE_PLAYLIST = "playlist"
 TYPE_ARTIST = "artist"
 
-VOLUME_MUFFLE_FACTOR = 0.5
-VOLUME_INCREMENT = 20
+DEFAULT_MUFFLE_FACTOR = 0.5  # volume muffle factor
+DEFAULT_VOLUME_INCREMENT = 20
 
 URL_DEV_DASHBOARD = "https://developer.spotify.com/dashboard/applications"
 

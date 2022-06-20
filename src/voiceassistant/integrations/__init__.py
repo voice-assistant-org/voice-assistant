@@ -6,7 +6,6 @@ import importlib
 import inspect
 from typing import TYPE_CHECKING, Any, Callable, List, Type
 
-from voiceassistant.config import Config
 from voiceassistant.exceptions import IntegrationError
 from voiceassistant.utils.log import get_logger
 
@@ -14,11 +13,16 @@ from .base import Integration
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
+    from voiceassistant.config import Config
+
+    SetupFuncType = Callable[[VoiceAssistant, Config], Integration]
+
 
 _LOGGER = get_logger(__name__)
 
 _PACKAGE = "voiceassistant.integrations"
-_INTEGRATION_MODULES = ["respeaker", "hass", "spotify"]
+_BUILT_IN = "general"
+_INTEGRATION_MODULES = [_BUILT_IN, "respeaker", "hass", "spotify"]
 
 
 class IntegrationsComponent:
@@ -34,23 +38,21 @@ class IntegrationsComponent:
         integrations: List[Integration] = []
 
         for module_name in _INTEGRATION_MODULES:
-            if module_name not in Config:
+            if module_name not in self._vass.config:  # fix
                 continue
 
             _LOGGER.info(f"Importing integration: {module_name}")
             try:
-                module = importlib.import_module(f".{module_name}", _PACKAGE)
-                integration_classes = inspect.getmembers(module, _is_subclass_of(Integration))
-                integrations.extend(class_[1](self._vass) for class_ in integration_classes)
+                integration = _load_integration(module_name, self._vass)
+                integrations.append(integration)
             except IntegrationError as e:
-                _LOGGER.error(f"Unable to import integration '{module_name}': {e}")
+                _LOGGER.error(f"Unable to load integration '{module_name}': {e}")
             except Exception:
                 _LOGGER.exception(
                     f"Unexpected exception while importing integration '{module_name}'"
                 )
 
         for integration in integrations:
-
             actions = integration.actions
             if actions:
                 for action in actions:
@@ -70,6 +72,17 @@ class IntegrationsComponent:
             if addons:
                 for addon in addons:
                     self._vass.addons.add(addon)
+
+
+def _load_integration(name: str, vass: VoiceAssistant) -> Integration:
+    """Load integration by name."""
+    module = importlib.import_module(f".{name}", _PACKAGE)
+    try:
+        setup: SetupFuncType = module.setup  # type: ignore
+    except AttributeError:
+        raise IntegrationError("integration module must have setup(vass, config) function.")
+
+    return setup(vass, vass.config)
 
 
 def _is_subclass_of(base_type: Type) -> Callable[[Any], bool]:

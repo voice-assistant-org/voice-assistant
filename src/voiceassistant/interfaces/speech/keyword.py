@@ -1,25 +1,30 @@
 """Keyword detector component."""
 
+from __future__ import annotations
+
 import struct
+from typing import TYPE_CHECKING
 
 import pvporcupine
 
-from voiceassistant.config import Config
 from voiceassistant.exceptions import ConfigValidationError
+
+if TYPE_CHECKING:
+    from voiceassistant.core import VoiceAssistant
 
 
 class KeywordDetector:
     """Keyword detector."""
 
-    def __init__(self) -> None:
+    def __init__(self, vass: VoiceAssistant) -> None:
         """Create Keyword detector object."""
-        keyword = Config.triggerword.picovoice.word
+        config = vass.config.triggerword.picovoice
 
-        if keyword not in pvporcupine.KEYWORDS:
+        if config.word not in pvporcupine.KEYWORDS:
             raise ConfigValidationError(f"available keywords are {pvporcupine.KEYWORDS}")
 
         self._detector = pvporcupine.create(
-            keywords=[keyword], sensitivities=[Config.triggerword.picovoice.sensitivity]
+            keywords=[config.word], sensitivities=[config.sensitivity]
         )
 
         self.rate = self._detector.sample_rate

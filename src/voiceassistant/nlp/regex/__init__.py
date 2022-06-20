@@ -4,18 +4,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional
 
-import yaml
-
-from voiceassistant.config import Config
-from voiceassistant.const import DATA_DIR
 from voiceassistant.nlp.base import BaseNLP, NlpResult
 
 from .expression import Expression
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
-
-NLP_DATAFILE = f"{DATA_DIR}/nlp/regex.yaml"
 
 
 class RegexIntent:
@@ -45,14 +39,11 @@ class RegexNLP(BaseNLP):
     """NL regex processor."""
 
     name = "regex"
-    _intents: List[RegexIntent] = []
 
     def __init__(self, vass: VoiceAssistant) -> None:
         """Init."""
         self._vass = vass
-        # build in intents
-        with open(NLP_DATAFILE) as file:
-            self._intents.extend(RegexIntent(**intent) for intent in yaml.safe_load(file))
+        self._intents: List[RegexIntent] = []
 
         # custom intents from config
         self._intents.extend(
@@ -61,7 +52,7 @@ class RegexNLP(BaseNLP):
                 expressions=skill["nlp"]["expressions"],
                 entities=skill["nlp"].get("entities"),
             )
-            for skill in Config.get("skills") or []
+            for skill in self._vass.config.get("skills") or []
             if skill["nlp"]["name"] == self.name
         )
 

@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from voiceassistant import addons
-from voiceassistant.config import Config
 from voiceassistant.exceptions import UserCommunicateException
 from voiceassistant.interfaces.base import InterfaceIO
 from voiceassistant.utils.debug import print_and_flush
@@ -33,9 +32,9 @@ class SpeechInterface(InterfaceIO):
     def __init__(self, vass: VoiceAssistant) -> None:
         """Init."""
         self._vass = vass
-        self.keyword_detector = KeywordDetector()
-        self.sst = SpeechToText(self.keyword_detector.rate)
-        self.tts = TextToSpeech()
+        self.keyword_detector = KeywordDetector(vass)
+        self.sst = SpeechToText(vass, self.keyword_detector.rate)
+        self.tts = TextToSpeech(vass)
         self._mic_should_be_on = True
 
     def input(self) -> str:
@@ -58,7 +57,7 @@ class SpeechInterface(InterfaceIO):
                 with MicrophoneStream(
                     rate=self.keyword_detector.rate,
                     chunk=self.keyword_detector.chunk_size,
-                    rolling_window_sec=Config.get("prerecord_seconds", 3),
+                    rolling_window_sec=self._vass.config.get("prerecord_seconds", 3),
                 ) as stream:
                     self._wait_for_trigger(stream)
                     self.process_speech(stream)
