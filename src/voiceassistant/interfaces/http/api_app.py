@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING
 
 from flask import Flask, Response, jsonify, request
 
-from voiceassistant.config import Config
 from voiceassistant.exceptions import ConfigValidationError, SkillError
 from voiceassistant.utils import volume
 from voiceassistant.utils.datastruct import DottedDict
@@ -116,7 +115,7 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
     @authorized
     def get_config() -> Response:
         """Get Voice Assistant config."""
-        return jsonify(Config)  # type: ignore
+        return jsonify(vass.config)  # type: ignore
 
     @app.route(f"/{name}/config", methods=["POST"])
     @authorized
@@ -127,7 +126,7 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
         """
         new_config = request.get_json() or {}
         try:
-            Config.write(new_config)
+            vass.config.write(new_config)
             return Response(status=200)
         except ConfigValidationError:
             return Response("Invalid config", status=406)
@@ -159,11 +158,11 @@ def api_factory(vass: VoiceAssistant, app: Flask) -> Flask:
     def info() -> Response:
         """Get info about Voice Assistant."""
         info = {
-            "name": Config.general.get("name", "undefined"),
+            "name": vass.config.general.get("name", "undefined"),
             "version": __version__,
             "uuid": get_uuid(),
-            "language": Config.general.get("language", "en"),
-            "area": Config.general.get("area", "undefined"),
+            "language": vass.config.general.get("language", "en"),
+            "area": vass.config.general.get("area", "undefined"),
         }
         return jsonify(info)  # type: ignore
 

@@ -1,15 +1,20 @@
 """Text-to-speech component."""
 
+from __future__ import annotations
+
 import os
+from typing import TYPE_CHECKING
 
 import boto3
 from botocore.config import Config as BotoConfig
 from botocore.exceptions import ClientError, NoCredentialsError
 
-from voiceassistant.config import Config
 from voiceassistant.const import DEFAULT_CONFIG_DIR
 from voiceassistant.exceptions import SetupIncomplete
 from voiceassistant.utils.log import get_logger
+
+if TYPE_CHECKING:
+    from voiceassistant.core import VoiceAssistant
 
 _LOGGER = get_logger(__name__)
 
@@ -17,17 +22,19 @@ _LOGGER = get_logger(__name__)
 class TextToSpeech:
     """Text to Speech class using Amazon Polly."""
 
-    def __init__(self) -> None:
+    def __init__(self, vass: VoiceAssistant) -> None:
         """Create text-to-speech object."""
+        self._config = vass.config.tts.aws
+
         boto_config = BotoConfig(
-            region_name=Config.tts.aws.region_name,
+            region_name=self._config.region_name,
             connect_timeout=0.7,
             read_timeout=0.7,
             parameter_validation=False,
         )
         self._client = boto3.Session(
-            aws_access_key_id=Config.tts.aws.access_key_id,
-            aws_secret_access_key=Config.tts.aws.secret_access_key,
+            aws_access_key_id=self._config.access_key_id,
+            aws_secret_access_key=self._config.secret_access_key,
         ).client(service_name="polly", config=boto_config)
 
         try:
@@ -68,6 +75,6 @@ class TextToSpeech:
     def synthesize(self, text: str, format: str = "mp3") -> bytes:
         """Synthesize `text` to audio bytes."""
         return self._client.synthesize_speech(  # type: ignore
-            VoiceId=Config.tts.aws.voice_id, OutputFormat=format, Text=text
+            VoiceId=self._config.voice_id, OutputFormat=format, Text=text
         )["AudioStream"].read()
         # ogg_vorbis

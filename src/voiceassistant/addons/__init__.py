@@ -13,16 +13,11 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List
 
 from voiceassistant.utils.log import get_logger
 
-from . import keyword_addon
 from .create import Addon, CoreAttribute
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
 
-
-_INTERNAL_ADDONS = [
-    keyword_addon.react_to_keyword,
-]
 
 _LOGGER = get_logger(__name__)
 
@@ -43,9 +38,6 @@ class AddonsComponent:
         global _ADDONS_START, _ADDONS_END
         _ADDONS_START = {}
         _ADDONS_END = {}
-
-        for addon in _INTERNAL_ADDONS:
-            self.add(addon)
 
     def add(self, addon: Addon) -> None:
         """Enable addon by wrapping one of methods in core object."""

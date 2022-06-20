@@ -2,27 +2,21 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Iterable, List, Optional
+from typing import TYPE_CHECKING, Iterable, List, Optional
 
-import yaml
-
-from voiceassistant.config import Config
-from voiceassistant.const import DATA_DIR
 from voiceassistant.nlp.base import BaseNLP, NlpResult
 
-from .expression import Expression
+from .expression import EntitiesDict, Expression
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
-
-NLP_DATAFILE = f"{DATA_DIR}/nlp/regex.yaml"
 
 
 class RegexIntent:
     """Store NLP regex intent related attributes."""
 
     def __init__(
-        self, name: str, expressions: Iterable[str], entities: Optional[Dict[str, str]] = None
+        self, name: str, expressions: Iterable[str], entities: Optional[EntitiesDict] = None
     ) -> None:
         """Create regex skill struct."""
         self.name = name
@@ -45,25 +39,11 @@ class RegexNLP(BaseNLP):
     """NL regex processor."""
 
     name = "regex"
-    _intents: List[RegexIntent] = []
 
     def __init__(self, vass: VoiceAssistant) -> None:
         """Init."""
         self._vass = vass
-        # build in intents
-        with open(NLP_DATAFILE) as file:
-            self._intents.extend(RegexIntent(**intent) for intent in yaml.safe_load(file))
-
-        # custom intents from config
-        self._intents.extend(
-            RegexIntent(
-                name=skill["name"],
-                expressions=skill["nlp"]["expressions"],
-                entities=skill["nlp"].get("entities"),
-            )
-            for skill in Config.get("skills") or []
-            if skill["nlp"]["name"] == self.name
-        )
+        self._intents: List[RegexIntent] = []
 
     def process(self, transcript: str) -> Optional[NlpResult]:
         """Process transcript by matching it to each skill."""
@@ -73,11 +53,9 @@ class RegexNLP(BaseNLP):
                 return nlp_result
         return None
 
-    def add(
-        self, name: str, expressions: Iterable[str], entities: Optional[Dict[str, str]] = None
-    ) -> None:
+    def add(self, intent: RegexIntent) -> None:
         """Add regex intent."""
-        self._intents.append(RegexIntent(name, expressions, entities))
+        self._intents.append(intent)
 
 
 __all__ = ["RegexNLP"]

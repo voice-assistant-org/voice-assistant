@@ -5,9 +5,14 @@ from typing import Any, Callable, Dict, List
 
 import diskcache as dc
 
-from voiceassistant.const import CACHE_DIR
+from voiceassistant.addons import AddonsComponent
+from voiceassistant.config import Config
+from voiceassistant.const import CACHE_DIR, CONFIG_FILE_PATH
 from voiceassistant.exceptions import AssistantBaseException
+from voiceassistant.integrations import IntegrationsComponent
 from voiceassistant.interfaces import InterfacesComponent
+from voiceassistant.nlp import NaturalLanguageComponent
+from voiceassistant.skills import SkillsComponent
 from voiceassistant.utils.log import get_logger
 
 VassJob = Callable[[], None]
@@ -25,6 +30,7 @@ class VoiceAssistant:
 
         self.data: Dict[str, Any] = {}
         self.cache: dc.Cache = dc.Cache(CACHE_DIR)
+        self.config = Config(CONFIG_FILE_PATH)
 
         # interfaces must only be instantiated once, no reloading allowed
         self.interfaces = InterfacesComponent(self)
@@ -41,11 +47,7 @@ class VoiceAssistant:
         Order of initialization matters.
         """
         _LOGGER.info("Loading components")
-
-        from voiceassistant.addons import AddonsComponent
-        from voiceassistant.integrations import IntegrationsComponent
-        from voiceassistant.nlp import NaturalLanguageComponent
-        from voiceassistant.skills import SkillsComponent
+        self.config.reload()
 
         self.nlp = NaturalLanguageComponent(self)
         self.skills = SkillsComponent(self)

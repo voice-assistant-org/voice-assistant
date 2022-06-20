@@ -9,14 +9,13 @@ from typing import TYPE_CHECKING, Any, Callable, ContextManager, Dict, Iterable,
 
 import tekore as tk
 
-from voiceassistant.config import Config
 from voiceassistant.exceptions import ActionError, SetupIncomplete, UserCommunicateException
 
 from .const import (
+    DOMAIN,
     KEY_REFRESH_TOKEN,
     MSG_NO_DEVICE,
     MSG_NOT_PLAYING,
-    NAME,
     TYPE_ALBUM,
     TYPE_ARTIST,
     TYPE_PLAYLIST,
@@ -26,6 +25,7 @@ from .const import (
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
+    from voiceassistant.config import Config
 
 
 class _SpotifyAuth:
@@ -33,15 +33,15 @@ class _SpotifyAuth:
 
     _token: Optional[tk.RefreshingToken] = None
 
-    def __init__(self, vass: VoiceAssistant) -> None:
+    def __init__(self, vass: VoiceAssistant, config: Config) -> None:
         """Init."""
         self._vass = vass
         self._client = tk.Spotify()
 
-        self._redirect_uri = f"{vass.interfaces.http.url}/callback/{NAME}"
+        self._redirect_uri = f"{vass.interfaces.http.url}/callback/{DOMAIN}"
         self._credentials = tk.RefreshingCredentials(
-            Config.spotify.client_id,
-            Config.spotify.client_secret,
+            config.spotify.client_id,
+            config.spotify.client_secret,
             redirect_uri=self._redirect_uri,
         )
 
@@ -67,7 +67,7 @@ class _SpotifyAuth:
             new_token = self._credentials.refresh_user_token(self.refresh_token)
         else:  # this will be used once on the first start
             try:
-                callback_data = self._vass.data["callback"][NAME]
+                callback_data = self._vass.data["callback"][DOMAIN]
                 code, state = callback_data["code"], callback_data["state"]
                 new_token = self._user_auth.request_token(code, state)
             except KeyError:
@@ -120,11 +120,11 @@ def pick_device(func: Callable) -> Callable:
 class VassSpotify(_SpotifyAuth):
     """Spotify client for Voice Assistant."""
 
-    def __init__(self, vass: VoiceAssistant) -> None:
+    def __init__(self, vass: VoiceAssistant, config: Config) -> None:
         """Init."""
-        _SpotifyAuth.__init__(self, vass)
+        _SpotifyAuth.__init__(self, vass, config)
         self._device_map: Dict[str, str] = {}
-        self._default_device: str = Config.spotify.default_device
+        self._default_device: str = config.spotify.default_device
 
     def get_default_device_id(self) -> str:
         """Return default device id."""

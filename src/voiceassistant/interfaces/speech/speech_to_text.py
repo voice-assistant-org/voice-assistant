@@ -1,16 +1,20 @@
 """Speech-to-text component."""
 
-from typing import Generator
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Generator
 
 import google
 from google.cloud import speech
 from iterators import TimeoutIterator
 
-from voiceassistant.config import Config
 from voiceassistant.exceptions import SetupIncomplete
 from voiceassistant.interfaces.speech.microphone_stream import MicrophoneStream
 from voiceassistant.utils.datastruct import RecognitionString
 from voiceassistant.utils.log import get_logger
+
+if TYPE_CHECKING:
+    from voiceassistant.core import VoiceAssistant
 
 _LOGGER = get_logger(__name__)
 
@@ -18,8 +22,10 @@ _LOGGER = get_logger(__name__)
 class SpeechToText:
     """Speech to Text class."""
 
-    def __init__(self, rate: int):
+    def __init__(self, vass: VoiceAssistant, rate: int):
         """Create speech-to-text object."""
+        config = vass.config.stt.google_cloud
+
         try:
             self._client = speech.SpeechClient()
         except google.auth.exceptions.DefaultCredentialsError as e:  # type: ignore
@@ -28,7 +34,7 @@ class SpeechToText:
         config = speech.RecognitionConfig(
             encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
             sample_rate_hertz=rate,
-            language_code=Config.stt.google_cloud.language_code,
+            language_code=config.language_code,
         )
         self._streaming_config = speech.StreamingRecognitionConfig(
             config=config, interim_results=True
