@@ -49,17 +49,13 @@ def setup(vass: VoiceAssistant, config: Config) -> Integration:
     vass.data[DOMAIN] = {}
     vass.data[DOMAIN][RING_STATE] = PixelRingState.off
 
-    return RespeakerMicrophoneArray(vass, config)
+    return RespeakerMicrophoneArray()
 
 
 class RespeakerMicrophoneArray(Integration):
     """Respeaker Microphone Array integration."""
 
     name = DOMAIN
-
-    def __init__(self, vass: VoiceAssistant, config: Config) -> None:
-        """Init."""
-        pass
 
     @property
     def addons(self) -> List[Addon]:

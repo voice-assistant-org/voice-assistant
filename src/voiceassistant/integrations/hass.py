@@ -45,7 +45,7 @@ def setup(vass: VoiceAssistant, config: Config) -> Integration:
         name: entity.ids for entity in config.hass.entities for name in entity.names
     }
 
-    return HomeAssistant(vass, config)
+    return HomeAssistant(vass)
 
 
 class HomeAssistant(Integration):
@@ -53,10 +53,9 @@ class HomeAssistant(Integration):
 
     name = DOMAIN
 
-    def __init__(self, vass: VoiceAssistant, config: Config) -> None:
+    def __init__(self, vass: VoiceAssistant) -> None:
         """Init."""
         self._vass = vass
-        self._config = config
 
     @property
     def actions(self) -> List[Action]:

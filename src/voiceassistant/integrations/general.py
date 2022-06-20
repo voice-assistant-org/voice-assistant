@@ -32,7 +32,7 @@ NLP_DATAFILE = f"{DATA_DIR}/nlp/regex.yaml"
 
 def setup(vass: VoiceAssistant, config: Config) -> Integration:
     """Set up general functionality integration."""
-    return GeneralFunctionality(vass, config)
+    return GeneralFunctionality(config)
 
 
 class GeneralFunctionality(Integration):
@@ -41,7 +41,7 @@ class GeneralFunctionality(Integration):
     # general functionality comes with no name/domain
     name = None  # type: ignore
 
-    def __init__(self, vass: VoiceAssistant, config: Config) -> None:
+    def __init__(self, config: Config) -> None:
         """Init."""
         self._config = config
 
