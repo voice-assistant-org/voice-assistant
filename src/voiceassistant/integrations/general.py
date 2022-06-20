@@ -7,7 +7,7 @@ import random
 import subprocess
 from datetime import datetime
 from functools import lru_cache
-from typing import TYPE_CHECKING, Dict, List, Union
+from typing import TYPE_CHECKING, List, Union
 
 import yaml
 
@@ -15,6 +15,7 @@ from voiceassistant.addons.create import Addon, CoreAttribute, addon_end
 from voiceassistant.const import DATA_DIR, DEFAULT_CONFIG_DIR
 from voiceassistant.exceptions import ConfigValidationError
 from voiceassistant.integrations.base import Integration
+from voiceassistant.nlp.regex import RegexIntent
 from voiceassistant.skills.create import Action, Skill, action, skill
 from voiceassistant.utils.log import get_logger
 
@@ -67,10 +68,10 @@ class GeneralFunctionality(Integration):
         return [react_to_keyword]
 
     @property
-    def regex_intents(self) -> List[Dict]:
+    def regex_intents(self) -> List[RegexIntent]:
         """Return list of regex intents implemented by integration."""
         with open(NLP_DATAFILE) as file:
-            return yaml.safe_load(file)  # type: ignore
+            return [RegexIntent(**intent) for intent in yaml.safe_load(file)]
 
 
 # addons

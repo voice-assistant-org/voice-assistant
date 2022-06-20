@@ -21,8 +21,7 @@ if TYPE_CHECKING:
 _LOGGER = get_logger(__name__)
 
 _PACKAGE = "voiceassistant.integrations"
-_BUILT_IN = "general"
-_INTEGRATION_MODULES = [_BUILT_IN, "respeaker", "hass", "spotify"]
+_INTEGRATION_MODULES = ["general", "skills", "respeaker", "hass", "spotify"]
 
 
 class IntegrationsComponent:
@@ -66,7 +65,7 @@ class IntegrationsComponent:
             regex_intents = integration.regex_intents
             if regex_intents:
                 for intent in regex_intents:
-                    self._vass.nlp.regex.add(**intent)
+                    self._vass.nlp.regex.add(intent)
 
             addons = integration.addons
             if addons:

@@ -15,7 +15,7 @@ Example:
 
 import re
 from dataclasses import dataclass
-from typing import Dict, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from voiceassistant.exceptions import NlpException
 from voiceassistant.utils.datastruct import DottedDict
@@ -44,6 +44,7 @@ class _VariableEntityName(str):
 
 
 EntityNameType = Union[_FixedEntityName, _VariableEntityName]
+EntitiesDict = Dict[str, Union[List, Tuple]]
 
 
 @dataclass
@@ -80,7 +81,7 @@ class ExpressionMatch:
 class Expression:
     """NLP expression parser."""
 
-    def __init__(self, expression: str, entities: Optional[Dict]):
+    def __init__(self, expression: str, entities: Optional[EntitiesDict] = None):
         """Create NLP regex expression."""
         self.expression = self._validate_expression(expression)
         self.regex = self._get_expression_regex(expression)
@@ -114,7 +115,7 @@ class Expression:
             return "".join(f"(?=.*(?:{part}))" for part in parts)
         return expression
 
-    def _preprocess_hard_entities(self, entities: Optional[Dict]) -> Optional[Dict]:
+    def _preprocess_hard_entities(self, entities: Optional[EntitiesDict]) -> Optional[Dict]:
         """Convert keys of hardcoded `entities` dict into _FixedEntityName."""
         if entities:
             for value in entities.values():

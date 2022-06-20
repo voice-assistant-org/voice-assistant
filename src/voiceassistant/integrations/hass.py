@@ -12,6 +12,7 @@ from hassapi.exceptions import ClientError, Unauthorised
 from voiceassistant.exceptions import IntegrationError
 from voiceassistant.integrations.base import Integration
 from voiceassistant.interfaces.base import InterfaceIO
+from voiceassistant.nlp.regex import RegexIntent
 from voiceassistant.skills.create import Action, Skill, action, skill
 from voiceassistant.utils.datastruct import DottedDict
 
@@ -79,7 +80,7 @@ class HomeAssistant(Integration):
         ]
 
     @property
-    def regex_intents(self) -> List[Dict]:
+    def regex_intents(self) -> List[RegexIntent]:
         """Return list of hass-regex-intents."""
         Intent = namedtuple("Intent", "name, service, regex")
         intents = (
@@ -88,16 +89,16 @@ class HomeAssistant(Integration):
             Intent("hass-open-cover", "open_cover", " up|open"),
             Intent("hass-close-cover", "close_cover", "down|close"),
         )
-        result = []
+        result: List[RegexIntent] = []
         for intent in intents:
             entity_names = _get_names_with_service(intent.service, self._vass)
             entity_names_regex = "|".join(entity_names)
             result.append(
-                {
-                    "name": intent.name,
-                    "expressions": (f"({intent.regex}&&{entity_names_regex})",),
-                    "entities": {"hass_entity_name": entity_names},
-                }
+                RegexIntent(
+                    name=intent.name,
+                    expressions=(f"({intent.regex}&&{entity_names_regex})",),
+                    entities={"hass_entity_name": entity_names},
+                )
             )
         return result
 

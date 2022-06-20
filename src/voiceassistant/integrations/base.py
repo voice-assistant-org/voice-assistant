@@ -1,25 +1,15 @@
 """Host Base Integration class."""
 
-from __future__ import annotations
-
 import abc
-from typing import TYPE_CHECKING, Dict, List
+from typing import List
 
 from voiceassistant.addons.create import Addon
+from voiceassistant.nlp.regex import RegexIntent
 from voiceassistant.skills.create import Action, Skill
-
-if TYPE_CHECKING:
-    from voiceassistant.core import VoiceAssistant
-    from voiceassistant.config import Config
 
 
 class Integration(abc.ABC):
     """Base integration class that sets required properties."""
-
-    @abc.abstractmethod
-    def __init__(self, vass: VoiceAssistant, config: Config) -> None:
-        """Init."""
-        raise NotImplementedError
 
     @property
     @abc.abstractmethod
@@ -43,6 +33,6 @@ class Integration(abc.ABC):
         return []
 
     @property
-    def regex_intents(self) -> List[Dict]:
+    def regex_intents(self) -> List[RegexIntent]:
         """Return list of regex intents implemented by integration."""
         return []

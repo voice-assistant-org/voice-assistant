@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Iterable, List, Optional
+from typing import TYPE_CHECKING, Iterable, List, Optional
 
 from voiceassistant.nlp.base import BaseNLP, NlpResult
 
-from .expression import Expression
+from .expression import EntitiesDict, Expression
 
 if TYPE_CHECKING:
     from voiceassistant.core import VoiceAssistant
@@ -16,7 +16,7 @@ class RegexIntent:
     """Store NLP regex intent related attributes."""
 
     def __init__(
-        self, name: str, expressions: Iterable[str], entities: Optional[Dict[str, str]] = None
+        self, name: str, expressions: Iterable[str], entities: Optional[EntitiesDict] = None
     ) -> None:
         """Create regex skill struct."""
         self.name = name
@@ -45,17 +45,6 @@ class RegexNLP(BaseNLP):
         self._vass = vass
         self._intents: List[RegexIntent] = []
 
-        # custom intents from config
-        self._intents.extend(
-            RegexIntent(
-                name=skill["name"],
-                expressions=skill["nlp"]["expressions"],
-                entities=skill["nlp"].get("entities"),
-            )
-            for skill in self._vass.config.get("skills") or []
-            if skill["nlp"]["name"] == self.name
-        )
-
     def process(self, transcript: str) -> Optional[NlpResult]:
         """Process transcript by matching it to each skill."""
         for intent in self._intents:
@@ -64,11 +53,9 @@ class RegexNLP(BaseNLP):
                 return nlp_result
         return None
 
-    def add(
-        self, name: str, expressions: Iterable[str], entities: Optional[Dict[str, str]] = None
-    ) -> None:
+    def add(self, intent: RegexIntent) -> None:
         """Add regex intent."""
-        self._intents.append(RegexIntent(name, expressions, entities))
+        self._intents.append(intent)
 
 
 __all__ = ["RegexNLP"]
