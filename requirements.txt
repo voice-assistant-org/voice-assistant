@@ -1,15 +1,17 @@
-boto3>=1.9.71
-google-cloud-speech>= 2.2.0
-PyAudio>=0.2.11
-six>=1.11.0
-pyyaml>=5.4.1
-pvporcupine>=1.9.3
-iterators>=0.0.2
-hassapi>=0.1.1
-pixel-ring==0.1.0
+boto3 >= 1.9.71, < 2
+google-cloud-speech >= 2.2.0, < 3
+PyAudio >= 0.2.11, < 1
+six >= 1.11.0, < 2
+pyyaml >= 5.4.1, < 6
+pvporcupine >= 1.9.3, < 2
+iterators == 0.0.2
+hypothesis >= 5.16.0, < 6
+hassapi >= 0.1.1, < 1
+pixel-ring == 0.1.0
 flask >= 2.0.1, <3
 gpiozero >= 1.6.2, < 2
 diskcache >= 5.2.1, < 6
-tekore >= 4.0.0, < 5
+tekore == 4.3.0
 tenacity >= 8.0.1, < 9
 pyalsaaudio >= 0.9.0, < 1
+
