@@ -22,5 +22,9 @@ class InterfacesComponent:
         vass.add_job(self.speech.run)
         vass.add_job(self.http.run)
 
+    def reload(self) -> None:
+        """Reload speech interface."""
+        self.speech.reload()
+
 
 __all__ = ["InterfacesComponent"]

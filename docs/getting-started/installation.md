@@ -3,7 +3,7 @@
 	```bash
 	sudo apt-get update
 	sudo apt-get install -y libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0 \
-	python3-dev python3-pyaudio python3-venv mpg123
+	libatlas-base-dev python3-dev python3-pyaudio python3-venv mpg123
 	```
 2. Create virtual environment and install with pip:
 	```bash
