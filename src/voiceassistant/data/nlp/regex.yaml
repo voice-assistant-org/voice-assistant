@@ -13,7 +13,7 @@
 # music controls nlp
 - name: music-play-recommended
   expressions:
-    - (play&&songs|tracks|music&&recommended)
+    - (play&&songs|tracks|music|something&&recommended)
 
 - name: music-play
   expressions:
@@ -50,10 +50,11 @@
 - name: music-play-liked
   expressions:
     - (play&&songs|tracks&&liked|favorite)
+    - (play&&liked|favorites)
 
 - name: music-play-similar
   expressions:
-    - (play&&songs|tracks&&similar)
+    - (play&&songs|tracks|something&&similar)
 
 - name: music-add-current-track
   expressions:
