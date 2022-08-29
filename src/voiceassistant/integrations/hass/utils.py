@@ -76,7 +76,7 @@ class HassSkill(Skill):
         entities = {"hass_entity_name": friendly_names}
 
         if self.nlp_entities:
-            entities |= self.nlp_entities  # type: ignore
+            entities.update(self.nlp_entities)
 
         return RegexIntent(name=self.name, expressions=expressions, entities=entities)
 
