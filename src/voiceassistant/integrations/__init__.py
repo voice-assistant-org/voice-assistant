@@ -77,7 +77,7 @@ def _load_integration(name: str, vass: VoiceAssistant) -> Integration:
     """Load integration by name."""
     module = importlib.import_module(f".{name}", _PACKAGE)
     try:
-        setup: SetupFuncType = module.setup  # type: ignore
+        setup: SetupFuncType = module.setup
     except AttributeError:
         raise IntegrationError("integration module must have setup(vass, config) function.")
 

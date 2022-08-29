@@ -97,7 +97,7 @@ class Spotify(Integration):
 def play(vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO) -> None:
     """Start playback."""
     vass.data[DOMAIN][CLIENT].play()
-    _say_track_description(vass, interface)
+    interface.output("Let's go!")
 
 
 @skill("music-pause")
@@ -172,19 +172,21 @@ def set_volume(vass: VoiceAssistant, entities: DottedDict, interface: InterfaceI
         return
     vass.data[DOMAIN][CLIENT].set_volume(new_volume[0])
     vass.data[DOMAIN][ORIGINAL_VOLUME] = new_volume[0]
+    interface.output(f"setting volume to {new_volume[0]}")
 
 
 @skill("music-play-liked")
 def play_liked(vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO) -> None:
     """Play liked tracks."""
     vass.data[DOMAIN][CLIENT].play_liked_tracks()
+    interface.output("Favourites incoming")
 
 
 @skill("music-play-similar")
 def play_similar(vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO) -> None:
     """Play tracks similar to current."""
     vass.data[DOMAIN][CLIENT].play_similar_to_current()
-    _say_track_description(vass, interface)
+    interface.output("here's something similar")
 
 
 @skill("music-play-recommended")
@@ -193,7 +195,7 @@ def play_recommended_tracks(
 ) -> None:
     """Play recommended tracks."""
     vass.data[DOMAIN][CLIENT].play_recommended_tracks()
-    _say_track_description(vass, interface)
+    interface.output("here's recommended")
 
 
 @skill("music-add-current-track")
@@ -216,6 +218,7 @@ def play_current_artist(
 ) -> None:
     """Play tracks from currently playing artist."""
     vass.data[DOMAIN][CLIENT].play_current_track_artist()
+    _say_track_description(vass, interface)
 
 
 @skill("music-play-track")

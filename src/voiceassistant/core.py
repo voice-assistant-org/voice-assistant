@@ -32,7 +32,7 @@ class VoiceAssistant:
         self.cache: dc.Cache = dc.Cache(CACHE_DIR)
         self.config = Config(CONFIG_FILE_PATH)
 
-        # interfaces must only be instantiated once, no reloading allowed
+        # interfaces must be created once, no re-construction allowed
         self.interfaces = InterfacesComponent(self)
 
         # reloadable components
@@ -48,6 +48,7 @@ class VoiceAssistant:
         """
         _LOGGER.info("Loading components")
         self.config.reload()
+        self.interfaces.reload()
 
         self.nlp = NaturalLanguageComponent(self)
         self.skills = SkillsComponent(self)

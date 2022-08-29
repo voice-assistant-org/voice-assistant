@@ -32,9 +32,13 @@ class SpeechInterface(InterfaceIO):
     def __init__(self, vass: VoiceAssistant) -> None:
         """Init."""
         self._vass = vass
-        self.keyword_detector = KeywordDetector(vass)
-        self.sst = SpeechToText(vass, self.keyword_detector.rate)
-        self.tts = TextToSpeech(vass)
+        self.reload()
+
+    def reload(self) -> None:
+        """Reload speech components."""
+        self.keyword_detector = KeywordDetector(self._vass)
+        self.sst = SpeechToText(self._vass, self.keyword_detector.rate)
+        self.tts = TextToSpeech(self._vass)
         self._mic_should_be_on = True
 
     def input(self) -> str:
