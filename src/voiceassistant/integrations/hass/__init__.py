@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, List
 
 from hassapi import Hass
 from hassapi.exceptions import ClientError, Unauthorised
+
 from voiceassistant.exceptions import IntegrationError
 from voiceassistant.integrations.base import Integration
 from voiceassistant.nlp.regex import RegexIntent
