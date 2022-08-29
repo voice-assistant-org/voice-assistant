@@ -121,7 +121,8 @@ class Expression:
             for value in entities.values():
                 if not isinstance(value, (tuple, list)):
                     raise NlpException("Entities must be specified as tuples or lists")
-            return {_FixedEntityName(k): v for k, v in entities.items()}
+
+            return {_FixedEntityName(k): re.compile("|".join(v)) for k, v in entities.items()}
         return None
 
     def _get_entity_names(self, expression: str) -> Tuple[EntityNameType, ...]:
@@ -139,8 +140,8 @@ class Expression:
         """Find hardcoded entities from a `text`."""
         result = DottedDict()
 
-        for name, keywords in self.hard_entities.items():  # type: ignore
-            found = [ent for ent in keywords if ent in text]
+        for name, regex in self.hard_entities.items():  # type: ignore
+            found = regex.search(text)
             if found:
                 result.update({name: found[0]})
         return result
