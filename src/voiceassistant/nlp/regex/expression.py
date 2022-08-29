@@ -44,7 +44,7 @@ class _VariableEntityName(str):
 
 
 EntityNameType = Union[_FixedEntityName, _VariableEntityName]
-EntitiesDict = Dict[str, Union[List, Tuple]]
+EntitiesDict = Union[Dict[str, List[str]], Dict[str, Tuple[str, ...]]]
 
 
 @dataclass
