@@ -1,4 +1,11 @@
-"""Add-On functions for speech interface."""
+"""Add-On functions for speech interface.
+
+Sample config:
+
+respeaker:
+    pattern: echo
+    brightness: 40
+"""
 
 from __future__ import annotations
 
@@ -29,9 +36,9 @@ RING_STATE = "ring_state"
 class PixelRingState:
     """Host pixel ring states."""
 
-    off = 0
-    speak = 1
-    think = 2
+    OFF = 0
+    SPEAK = 1
+    THINK = 2
 
 
 def setup(vass: VoiceAssistant, config: Config) -> Integration:
@@ -41,13 +48,22 @@ def setup(vass: VoiceAssistant, config: Config) -> Integration:
 
         from gpiozero import LED
 
-        power = LED(5)
-        power.on()
-        pixel_ring.change_pattern("echo")
+        global power
+        power = LED(5)  # type: ignore
+        power.on()  # type: ignore
 
+    pattern = config[DOMAIN].get("pattern", "echo")
+    brightness = config[DOMAIN].get("brightness", 100)
+
+    assert pattern in ("echo", "google")
+    assert 0 <= brightness <= 100
+
+    pixel_ring.change_pattern(config[DOMAIN].get("pattern", "echo"))
+    pixel_ring.set_brightness(brightness)
     pixel_ring.off()
+
     vass.data[DOMAIN] = {}
-    vass.data[DOMAIN][RING_STATE] = PixelRingState.off
+    vass.data[DOMAIN][RING_STATE] = PixelRingState.OFF
 
     return RespeakerMicrophoneArray()
 
@@ -67,14 +83,14 @@ class RespeakerMicrophoneArray(Integration):
 def processing_starts(vass: VoiceAssistant) -> None:
     """Do before NLP starts."""
     pixel_ring.speak()
-    vass.data[DOMAIN][RING_STATE] = PixelRingState.speak
+    vass.data[DOMAIN][RING_STATE] = PixelRingState.SPEAK
 
 
 @addon_end(CoreAttribute.SPEECH_PROCESSING)
 def processing_ends(vass: VoiceAssistant) -> None:
     """Do when NLP ends."""
     pixel_ring.off()
-    vass.data[DOMAIN][RING_STATE] = PixelRingState.off
+    vass.data[DOMAIN][RING_STATE] = PixelRingState.OFF
 
 
 @addon_begin(CoreAttribute.SPEECH_OUTPUT)
@@ -86,7 +102,7 @@ def tts_starts(vass: VoiceAssistant) -> None:
 @addon_end(CoreAttribute.SPEECH_OUTPUT)
 def tts_ends(vass: VoiceAssistant) -> None:
     """Do when voice output ends."""
-    if vass.data[DOMAIN][RING_STATE] == PixelRingState.speak:
+    if vass.data[DOMAIN][RING_STATE] == PixelRingState.SPEAK:
         pixel_ring.speak()
     else:
         pixel_ring.off()
