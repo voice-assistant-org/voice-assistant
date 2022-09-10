@@ -43,6 +43,13 @@ class PixelRingState:
 
 def setup(vass: VoiceAssistant, config: Config) -> Integration:
     """Set up Respeaker integration."""
+    conf = config[DOMAIN] or {}
+    pattern = conf.get("pattern", "echo")
+    brightness = conf.get("brightness", 100)
+
+    assert pattern in ("echo", "google")
+    assert 0 <= brightness <= 100
+
     if isinstance(pixel_ring, apa102_pixel_ring.PixelRing):
         _LOGGER.info("Found ReSpeaker 4 Mic Array")
 
@@ -52,13 +59,7 @@ def setup(vass: VoiceAssistant, config: Config) -> Integration:
         power = LED(5)  # type: ignore
         power.on()  # type: ignore
 
-    pattern = config[DOMAIN].get("pattern", "echo")
-    brightness = config[DOMAIN].get("brightness", 100)
-
-    assert pattern in ("echo", "google")
-    assert 0 <= brightness <= 100
-
-    pixel_ring.change_pattern(config[DOMAIN].get("pattern", "echo"))
+    pixel_ring.change_pattern(pattern)
     pixel_ring.set_brightness(brightness)
     pixel_ring.off()
 
