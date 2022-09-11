@@ -1,4 +1,4 @@
-## Running in virtual environment (Python 3.6+)
+## Running as a system service
 1. Install dependencies:
 	```bash
 	sudo apt-get update
@@ -11,7 +11,45 @@
 	source vass-venv/bin/activate
 	pip install voiceassistant
 	```
-4. Start with command: `vass`
+	Voice Assistant can now be started with `vass` command inside the virtual environment where it is installed
+
+3. Create service configuration
+	```bash
+	sudo nano /etc/systemd/system/voice-assistant.service
+	```
+	Put the following configuration into `voice-assistant.service`
+	```bash
+	[Unit]
+	Description=voice-assistant service
+	After=multi-user.target
+
+	[Service]
+	Type=simple
+	ExecStart=/home/<USER NAME>/vass-venv/bin/vass
+	WorkingDirectory=/home/<USER NAME>
+	TimeoutStartSec=20
+	Restart=always
+	User=<USER NAME>
+
+	[Install]
+	WantedBy=multi-user.target
+
+	```
+4. Enable and start service
+	```bash
+	sudo systemctl enable voice-assistant.service
+	sudo systemctl start voice-assistant.service
+	```
+5. Status and logs
+
+	You can check service status with
+	```bash
+	sudo systemctl status voice-assistant.service
+	```
+	You can see logs with
+	```bash
+	journalctl -u voice-assistant
+	```
 
 ## Running on Docker
 
