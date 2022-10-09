@@ -9,6 +9,7 @@ respeaker:
 
 from __future__ import annotations
 
+import time
 from contextlib import suppress
 from typing import TYPE_CHECKING, List
 
@@ -92,6 +93,7 @@ def processing_starts(vass: VoiceAssistant) -> None:
 @addon_end(CoreAttribute.SPEECH_PROCESSING)
 def processing_ends(vass: VoiceAssistant) -> None:
     """Do when NLP ends."""
+    time.sleep(0.5)  # fix: LEDs on GPIO controlled microphones don't always turn off without wait
     pixel_ring.off()
     vass.data[DOMAIN][RING_STATE] = PixelRingState.OFF
 
