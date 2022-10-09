@@ -45,7 +45,7 @@ class Addon:
         try:
             self._func(vass)
         except Exception:
-            _LOGGER.exception("Unexpected addon exception")
+            _LOGGER.exception(f"Unexpected {self.name} addon exception")
 
 
 def addon_begin(core_attr: CoreAttribute, name: Optional[str] = None) -> Callable:
