@@ -9,6 +9,8 @@ respeaker:
 
 from __future__ import annotations
 
+import time
+from contextlib import suppress
 from typing import TYPE_CHECKING, List
 
 from voiceassistant.addons.create import Addon, CoreAttribute, addon_begin, addon_end
@@ -53,11 +55,12 @@ def setup(vass: VoiceAssistant, config: Config) -> Integration:
     if isinstance(pixel_ring, apa102_pixel_ring.PixelRing):
         _LOGGER.info("Found ReSpeaker 4 Mic Array")
 
-        from gpiozero import LED
+        import gpiozero
 
-        global power
-        power = LED(5)  # type: ignore
-        power.on()  # type: ignore
+        with suppress(gpiozero.exc.GPIOPinInUse):
+            global power
+            power = gpiozero.LED(5)  # type: ignore
+            power.on()  # type: ignore
 
     pixel_ring.change_pattern(pattern)
     pixel_ring.set_brightness(brightness)
@@ -90,6 +93,7 @@ def processing_starts(vass: VoiceAssistant) -> None:
 @addon_end(CoreAttribute.SPEECH_PROCESSING)
 def processing_ends(vass: VoiceAssistant) -> None:
     """Do when NLP ends."""
+    time.sleep(0.5)  # fix: LEDs on GPIO controlled microphones don't always turn off without wait
     pixel_ring.off()
     vass.data[DOMAIN][RING_STATE] = PixelRingState.OFF
 
