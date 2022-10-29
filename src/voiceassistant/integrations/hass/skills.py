@@ -27,6 +27,18 @@ BRIGHTNESS_FACTOR = 100
 RE_LIGHT_BRIGHTNESS = re_number_range(0, LIGHT_MAX_BRIGHTNESS)
 
 
+COLORS = {
+    "red": (255, 0, 0),
+    "green": (0, 255, 128),
+    "blue": (0, 64, 255),
+    "pink": (254, 134, 210),
+    "purple": (192, 56, 255),
+    "orange": (255, 128, 0),
+    "yellow": (255, 200, 0),
+    "amber": (255, 159, 64),
+}
+RE_COLOR_LIGHT = "|".join(COLORS.keys())
+
 RE_OPEN_COVER = re_separate_word("up") + "|open"
 RE_CLOSE_COVER = "down|close"
 RE_COVER_POSITION = re_number_range(0, COVER_MAX_POS)
@@ -152,6 +164,35 @@ def set_brightness(vass: VoiceAssistant, entities: DottedDict, interface: Interf
 
 
 @hass_skill(
+    name="hass-set-color",
+    hass_entity_filters={
+        "domains": {"light"},
+        "attributes": {
+            "supported_color_modes": {
+                ColorMode.HS,
+                ColorMode.XY,
+                ColorMode.RGB,
+                ColorMode.RGBW,
+                ColorMode.RGBWW,
+                ColorMode.WHITE,
+            }
+        },
+    },
+    skill_regex=RE_COLOR_LIGHT,
+    nlp_entities={"color": [RE_COLOR_LIGHT]},
+)
+def set_color(vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO) -> None:
+    """Set light color skill."""
+    client = vass.data[DOMAIN][CLIENT]
+    data = {"rgb_color": COLORS[entities.color]}
+
+    for entity_id in vass.data[DOMAIN][NAME_TO_ENTITY][entities.hass_entity_name]:
+        client.call_service("turn_on", entity_id, **data)
+
+    interface.output(f"setting {entities.color} color")
+
+
+@hass_skill(
     name="hass-open-cover",
     hass_entity_filters={"domains": {"cover"}},
     skill_regex=RE_OPEN_COVER,
@@ -196,6 +237,7 @@ SKILLS = [
     dim_light,
     brighten_light,
     set_brightness,
+    set_color,
     open_cover,
     close_cover,
     set_cover_position,
