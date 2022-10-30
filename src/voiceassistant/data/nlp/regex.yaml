@@ -21,8 +21,7 @@
 
 - name: music-pause
   expressions:
-    - stop
-    - pause
+    - (stop|pause&&music)
 
 - name: music-next
   expressions:

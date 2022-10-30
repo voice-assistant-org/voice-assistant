@@ -19,7 +19,7 @@ LIGHT_MAX_BRIGHTNESS = 9
 
 
 RE_TURN_ON = re_separate_word("on") + "|enable|start"
-RE_TURN_OFF = re_separate_word("off") + "|disable|stop"
+RE_TURN_OFF = re_separate_word("off") + "|disable"
 RE_DIM_LIGHT = re_separate_word("dim")
 RE_BRIGHTEN_LIGHT = "brighten"
 BRIGHTNESS_FACTOR = 100
@@ -42,6 +42,7 @@ RE_COLOR_LIGHT = "|".join(COLORS.keys())
 RE_OPEN_COVER = re_separate_word("up") + "|open"
 RE_CLOSE_COVER = "down|close"
 RE_COVER_POSITION = re_number_range(0, COVER_MAX_POS)
+RE_VOLUME_LEVEL = re_number_range(0, 9)
 
 
 @hass_skill(
@@ -231,6 +232,70 @@ def set_cover_position(vass: VoiceAssistant, entities: DottedDict, interface: In
         client.set_cover_position(entity_id, position)
 
 
+@hass_skill(
+    name="hass-media-play",
+    hass_entity_filters={"domains": {"media_player"}},
+    skill_regex="play|resume",
+)
+def media_play(vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO) -> None:
+    """Play media player."""
+    client = vass.data[DOMAIN][CLIENT]
+    for entity_id in vass.data[DOMAIN][NAME_TO_ENTITY][entities.hass_entity_name]:
+        client.call_service("media_play", entity_id)
+
+
+@hass_skill(
+    name="hass-media-pause",
+    hass_entity_filters={"domains": {"media_player"}},
+    skill_regex="pause|stop",
+)
+def media_pause(vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO) -> None:
+    """Pause media player."""
+    client = vass.data[DOMAIN][CLIENT]
+    for entity_id in vass.data[DOMAIN][NAME_TO_ENTITY][entities.hass_entity_name]:
+        client.call_service("media_pause", entity_id)
+
+
+@hass_skill(
+    name="hass-media-next",
+    hass_entity_filters={"domains": {"media_player"}},
+    skill_regex="next",
+)
+def media_next(vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO) -> None:
+    """Play next content."""
+    client = vass.data[DOMAIN][CLIENT]
+    for entity_id in vass.data[DOMAIN][NAME_TO_ENTITY][entities.hass_entity_name]:
+        client.call_service("media_next_track", entity_id)
+
+
+@hass_skill(
+    name="hass-media-previous",
+    hass_entity_filters={"domains": {"media_player"}},
+    skill_regex="previous",
+)
+def media_previous(vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO) -> None:
+    """Play previous content."""
+    client = vass.data[DOMAIN][CLIENT]
+    for entity_id in vass.data[DOMAIN][NAME_TO_ENTITY][entities.hass_entity_name]:
+        client.call_service("media_previous_track", entity_id)
+
+
+@hass_skill(
+    name="hass-media-previous",
+    hass_entity_filters={"domains": {"media_player"}},
+    skill_regex=r"(volume&&{RE_VOLUME_LEVEL})",
+    nlp_entities={"volume": [RE_VOLUME_LEVEL]},
+)
+def set_volume(vass: VoiceAssistant, entities: DottedDict, interface: InterfaceIO) -> None:
+    """Set brightness skill."""
+    client = vass.data[DOMAIN][CLIENT]
+    volume = word_or_str_to_int(entities.volume) / LIGHT_MAX_BRIGHTNESS
+    data = {"volume_level": volume}
+
+    for entity_id in vass.data[DOMAIN][NAME_TO_ENTITY][entities.hass_entity_name]:
+        client.call_service("volume_set", entity_id, **data)
+
+
 SKILLS = [
     turn_on,
     turn_off,
@@ -241,4 +306,9 @@ SKILLS = [
     open_cover,
     close_cover,
     set_cover_position,
+    media_play,
+    media_pause,
+    media_next,
+    media_previous,
+    # set_volume,  toDo: fix interlapse with music volume control
 ]
